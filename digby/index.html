@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Digby</title>
+<meta name="description" content="Small Mac apps, made with care: Digby Video Compressor and Digby Video Downloader. Free and open source, with every choice explained in plain English.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Digby">
+<meta property="og:title" content="Digby: small Mac apps, made with care">
+<meta property="og:description" content="Digby Video Compressor and Digby Video Downloader. Free and open source, for macOS.">
+<meta property="og:image" content="assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Digby wordmark above the line “Small Mac apps, made with care”, with the Compressor and Downloader icons">
+<meta name="twitter:card" content="summary_large_image">
+<!-- TODO(domain): add <link rel="canonical" href="https://…/"> and make og:image absolute once the site's address is known. -->
+<meta name="theme-color" content="#07112A">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500&family=Instrument+Sans:wght@400;500;600&family=Schibsted+Grotesk:wght@800&display=swap">
+<link rel="stylesheet" href="assets/digby.css">
+<script>try { const t = localStorage.getItem("digby-theme"); if (t) document.documentElement.dataset.theme = t } catch (e) {}</script>
+</head>
+<body>
+
+<header class="sky">
+  <div class="top">
+    <a class="wordmark" href="./" aria-label="Digby, home">Digby</a>
+  </div>
+  <div class="wrap statement">
+    <h1>Small Mac apps, <em>made with care</em>.</h1>
+    <p class="lead">Free and open source, with no accounts or subscriptions. Everything explained in plain English, before anything happens.</p>
+  </div>
+</header>
+
+<main>
+  <section class="apps" aria-label="The apps">
+    <div class="wrap grid">
+      <article class="card cp">
+        <div class="shot" aria-hidden="true">
+          <picture>
+            <source srcset="assets/shots/cp-app-dark.webp" media="(prefers-color-scheme: dark)">
+            <img src="assets/shots/cp-app-light.webp" alt="" width="1400" height="833" decoding="async">
+          </picture>
+        </div>
+        <div class="body">
+          <div class="name">
+            <img class="icon" src="assets/compressor-icon.png" alt="" width="256" height="256">
+            <h2><a href="../compressor/">Digby <span>Video Compressor</span></a></h2>
+          </div>
+          <p class="pitch">Make any video far smaller, and compare it side by side before you commit.</p>
+          <p class="proof"><b>Measured, not promised.</b> It test-encodes your own video, scores it with Netflix’s VMAF, and checks on-screen text still reads.</p>
+          <p class="meta">Free · Apple Silicon · macOS 26 or later</p>
+          <div class="actions">
+            <a class="btn" href="https://github.com/digbyapps/digby-video-compressor/releases/latest/download/Digby-Video-Compressor.dmg">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.5v8M4.5 7 8 10.5 11.5 7M3 13.5h10"/></svg>
+              Download<span class="vh"> Digby Video Compressor</span></a>
+            <a class="more" href="../compressor/">Learn more<span class="vh"> about Digby Video Compressor</span> <span class="arr" aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card dl">
+        <div class="shot" aria-hidden="true">
+          <div class="win">
+            <div class="bar"><i></i><i></i><i></i></div>
+            <div class="panes">
+              <picture class="side">
+                <source srcset="assets/shots/dl-side-dark.webp" media="(prefers-color-scheme: dark)">
+                <img src="assets/shots/dl-side-light.webp" alt="" width="263" height="409" decoding="async">
+              </picture>
+              <picture class="main">
+                <source srcset="assets/shots/dl-main-dark.webp" media="(prefers-color-scheme: dark)">
+                <img src="assets/shots/dl-main-light.webp" alt="" width="1100" height="789" decoding="async">
+              </picture>
+            </div>
+          </div>
+        </div>
+        <div class="body">
+          <div class="name">
+            <img class="icon" src="assets/downloader-icon.png" alt="" width="256" height="256">
+            <h2><a href="../downloader/">Digby <span>Video Downloader</span></a></h2>
+          </div>
+          <p class="pitch">Paste a link, see exactly what you’ll get, and keep it at the quality you choose.</p>
+          <p class="proof"><b>What you see is what you get.</b> “You’ll get” lists the resolution, format and size before anything downloads.</p>
+          <p class="meta">Free · Apple Silicon · macOS 14 or later</p>
+          <div class="actions">
+            <a class="btn" href="https://github.com/digbyapps/digby-video-downloader/releases/latest/download/Digby-Video-Downloader.dmg">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.5v8M4.5 7 8 10.5 11.5 7M3 13.5h10"/></svg>
+              Download<span class="vh"> Digby Video Downloader</span></a>
+            <a class="more" href="../downloader/">Learn more<span class="vh"> about Digby Video Downloader</span> <span class="arr" aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="together" aria-labelledby="together-h">
+    <div class="wrap">
+      <h2 id="together-h">Better together.</h2>
+      <p class="sub">Download a video, then make it smaller in one click.</p>
+      <ol class="flow">
+        <li>
+          <img src="assets/downloader-icon.png" alt="" width="256" height="256" loading="lazy">
+          <p><b>Downloaded</b>Checked: it plays, with the expected picture and sound.</p>
+        </li>
+        <li class="hand">
+          <span class="pill">Compress with Digby</span>
+          <p>One button on the finished download.</p>
+        </li>
+        <li>
+          <img src="assets/compressor-icon.png" alt="" width="256" height="256" loading="lazy">
+          <p><b>Ready to shrink</b>It opens in the Compressor. Your download stays as it is.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="why" aria-labelledby="why-h">
+    <div class="wrap">
+      <h2 id="why-h">Why Digby</h2>
+      <p>Most video tools hide what they’re doing behind jargon and settings. Digby does the opposite: it shows you the result before it commits, and explains every choice in words anyone can read.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="row">
+      <span><span class="mark">Digby</span>© 2026 Digby</span>
+      <nav aria-label="Footer">
+        <a href="../compressor/">Compressor</a>
+        <a href="../downloader/">Downloader</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="https://github.com/digbyapps">GitHub</a>
+        <button class="theme" type="button" aria-label="Switch to dark mode" title="Switch to dark mode">
+          <svg class="moon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1Z"/></svg>
+          <svg class="sun" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="2.8"/><path d="M8 1.5v1.3M8 13.2v1.3M1.5 8h1.3M13.2 8h1.3M3.4 3.4l.9.9M11.7 11.7l.9.9M3.4 12.6l.9-.9M11.7 4.3l.9-.9"/></svg>
+        </button>
+      </nav>
+    </div>
+    <p class="fine">Release notes: <a href="https://github.com/digbyapps/digby-video-compressor/releases">Compressor</a>, <a href="https://github.com/digbyapps/digby-video-downloader/releases">Downloader</a>.
+      Questions or problems? Open an issue on GitHub: <a href="https://github.com/digbyapps/digby-video-compressor/issues">Compressor</a>, <a href="https://github.com/digbyapps/digby-video-downloader/issues">Downloader</a>.
+      Source code and licences: <a href="https://github.com/digbyapps/digby-video-compressor">Compressor</a>, <a href="https://github.com/digbyapps/digby-video-downloader">Downloader</a>.</p>
+  </div>
+</footer>
+
+<script src="assets/theme.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2560 1440" preserveAspectRatio="xMidYMid slice">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#081430"/><stop offset=".48" stop-color="#1D3E72"/><stop offset=".8" stop-color="#4F7FBE"/><stop offset="1" stop-color="#E7B898"/></linearGradient>
+  <radialGradient id="floor" cx="1850" cy="1500" r="1100" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#F2C2A0" stop-opacity=".55"/><stop offset="1" stop-color="#F2C2A0" stop-opacity="0"/></radialGradient>
+  <linearGradient id="glass" x1="0" y1="520" x2="0" y2="1000" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#D3E2F6"/></linearGradient>
+  <filter id="bloom" x="-50%" y="-300%" width="200%" height="700%"><feGaussianBlur stdDeviation="22" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="lift" x="-30%" y="-40%" width="160%" height="180%"><feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#04102A" flood-opacity=".45"/></filter>
+</defs>
+<rect width="2560" height="1440" fill="url(#bg)"/>
+<rect width="2560" height="1440" fill="url(#floor)"/>
+<g filter="url(#lift)" fill="none" stroke="url(#glass)" stroke-width="96" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M1620,492 L1850,648 L2080,492"/>
+  <path d="M1620,1028 L1850,872 L2080,1028"/>
+</g>
+<rect x="1600" y="742" width="500" height="36" rx="18" fill="#FFE7D4" filter="url(#bloom)"/>
+</svg>

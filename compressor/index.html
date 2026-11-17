@@ -1,0 +1,707 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Digby Video Compressor</title>
+<meta name="description" content="Digby Video Compressor measures your video and finds the smallest file that still looks like the original, with any text in it still sharp enough to read. Free for macOS.">
+<meta property="og:title" content="Digby Video Compressor: less weight, same picture">
+<meta property="og:description" content="The smallest file that still looks like the original. Free for macOS.">
+<meta property="og:image" content="assets/icon-1024.png">
+<meta name="theme-color" content="#0E1F3D">
+<link rel="icon" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/icon-256.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@200;300;400;500;600&family=Instrument+Sans:wght@400;500;600&family=Schibsted+Grotesk:wght@800&display=swap">
+<style>
+/* Layout: sky hero → measured proof with a before/after → how it works (a single convergence thread) → features →
+   Preview Studio → formats → download (sky again) → FAQ → footer. One reading column, 1240 max. */
+:root {
+  --altitude: #0E1F3D;
+  --sky: #4D7DB8;
+  --haze: #BFD3EA;
+  --dawn: #F2C2A0;
+  --dawn-deep: #C9774A;
+  --bg: #F7F9FC;
+  --bg-2: #EEF2F8;
+  --fg: #0E1726;
+  --muted: #5A6A80;
+  --line: #DCE3EC;
+  --card: #FFFFFF;
+  --accent: #3A6AAE;
+  --good: #2F7D5B;
+  --display: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --body: "Instrument Sans", -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #070C16; --bg-2: #0B1220; --fg: #E6ECF5; --muted: #8B99AE; --line: #1A2638; --card: #0E1625; --accent: #8FB6E8; --good: #6FC79E; --dawn-deep: #F0B28C;
+  color-scheme: dark } }
+:root[data-theme="dark"] { --bg: #070C16; --bg-2: #0B1220; --fg: #E6ECF5; --muted: #8B99AE; --line: #1A2638; --card: #0E1625; --accent: #8FB6E8; --good: #6FC79E; --dawn-deep: #F0B28C; color-scheme: dark }
+
+* { box-sizing: border-box }
+html { scroll-behavior: smooth; scroll-padding-top: 72px }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.6 var(--body); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 20; background: var(--altitude) }
+img { max-width: 100%; display: block }
+a { color: inherit }
+.wrap { max-width: 1240px; margin: 0 auto; padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px)) }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0 }
+h2 { font-weight: 300; font-size: clamp(34px, 4.8vw, 62px); line-height: 1.04; letter-spacing: -.028em }
+h3 { font-weight: 500; font-size: 21px; letter-spacing: -.01em; line-height: 1.25 }
+p { margin: 0 }
+.eyebrow { font: 500 12px/1 var(--body); letter-spacing: .18em; text-transform: uppercase; color: var(--muted); display: flex; gap: 14px; align-items: center }
+.eyebrow i { display: inline-block; width: 28px; height: 1px; background: currentColor; opacity: .5 }
+.lead { font-size: clamp(17px, 1.5vw, 20px); color: var(--muted); max-width: 38em; margin-top: 22px }
+section { padding-block: clamp(90px, 12vw, 160px) }
+.num { font-variant-numeric: tabular-nums }
+
+/* entrance on scroll (content is visible without it: only a gentle rise) */
+.rise { transition: opacity .9s cubic-bezier(.2,.8,.2,1), transform .9s cubic-bezier(.2,.8,.2,1) }
+.js .rise:not(.in) { opacity: .001; transform: translateY(22px) }
+
+/* nav */
+nav { position: fixed; top: env(safe-area-inset-top, 0px); left: 0; right: 0; z-index: 15; display: flex; align-items: center; gap: 28px;
+  padding-block: 14px; padding-left: max(28px, env(safe-area-inset-left, 0px)); padding-right: max(28px, env(safe-area-inset-right, 0px));
+  color: #fff; isolation: isolate; transform: translateZ(0) }
+/* the solid bar is its own layer that only fades: no height change, no re-blurring mid-transition */
+nav::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: 0; transition: opacity .3s ease;
+  background: rgba(11, 24, 47, .95);
+  box-shadow: 0 1px 0 rgba(255,255,255,.07); will-change: opacity }
+nav.solid::before { opacity: 1 }
+.brand { display: flex; align-items: center; gap: 10px; font: 400 21px/1 var(--display); letter-spacing: .02em; color: #fff; text-decoration: none }
+.brand img { width: 30px; height: 30px }
+/* Digby lockup: one unit, sized in em off the wordmark (25px) so it scales without changing proportion */
+nav .brand.digby-lockup { display: inline-flex; align-items: baseline; flex: none; gap: 0; font-size: 25px; letter-spacing: normal; line-height: 1; white-space: nowrap; color: #fff; text-decoration: none }
+.digby-lockup .dg-mark { font: 800 1em/1 "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif; letter-spacing: -.05em; color: #fff; font-kerning: normal }
+.digby-lockup .dg-rule { align-self: center; flex: none; width: 1px; height: .72em; background: currentColor; opacity: .32; margin: 0 .56em 0 .6em; transform: translateY(.04em) }
+.digby-lockup .dg-product { font: 400 .68em/1 var(--display, "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif); letter-spacing: .005em; color: rgba(255,255,255,.78) }
+@media (max-width: 760px) { .digby-lockup .dg-rule { margin: 0 .4em 0 .44em } .digby-lockup .dg-product { font-size: .6em; letter-spacing: .01em } }
+/* small phones: the whole lockup shrinks with the viewport (full size down to ~360px), never drops the product name */
+@media (max-width: 430px) { nav .brand.digby-lockup { font-size: clamp(16px, calc((100vw - 140px) / 8.6), 25px) } }
+/* nav layout: Download always on the right; never wraps */
+@media (max-width: 900px) { nav .links .nav-opt { display: none } }
+@media (max-width: 760px) { nav { gap: 16px } nav > .btn-small { margin-left: auto } }
+@media (max-width: 430px) { nav { padding-left: max(18px, env(safe-area-inset-left, 0px)); padding-right: max(18px, env(safe-area-inset-right, 0px)) } nav > .btn-small { padding: 9px 13px; font-size: 13px; flex: none } }
+nav .links { display: flex; gap: 26px; margin-left: auto; font-size: 14px }
+nav .links a { color: rgba(255,255,255,.76); text-decoration: none; transition: color .2s }
+nav .links a:hover { color: #fff }
+
+/* buttons */
+.btn { display: inline-flex; align-items: center; gap: 10px; border-radius: 999px; font: 600 15px/1 var(--body); text-decoration: none; cursor: pointer; border: 0;
+  position: relative; transition: transform .3s cubic-bezier(.2,.8,.2,1), background-color .2s }
+.btn-light::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .3s;
+  box-shadow: 0 16px 40px rgba(8, 20, 45, .35), 0 0 0 6px rgba(242, 194, 160, .2) }
+.btn-light:hover::after { opacity: 1 }
+.btn:focus-visible { outline: 2px solid var(--dawn); outline-offset: 3px }
+.btn-light { background: #fff; color: var(--altitude); padding: 17px 27px; box-shadow: 0 10px 30px rgba(8, 20, 45, .28) }
+.btn-light:hover { transform: translateY(-2px) }
+.btn-ghost { color: #fff; padding: 17px 22px; background: rgba(255,255,255,.08); box-shadow: inset 0 0 0 1px rgba(255,255,255,.24) }
+.btn-ghost:hover { background: rgba(255,255,255,.15) }
+.btn-small { padding: 10px 16px; font-size: 13.5px }
+.btn svg { width: 16px; height: 16px; flex: none }
+
+/* sky (hero + download) */
+.sky { position: relative; overflow: hidden; color: #fff; isolation: isolate;
+  background: linear-gradient(180deg, #0A1830 0%, #14294D 24%, #2E5590 52%, #6F98C8 74%, #C9D9EC 90%, #F2C2A0 100%) }
+.sky::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(120% 70% at 80% 100%, rgba(242,194,160,.28), transparent 60%), radial-gradient(80% 50% at 10% 0%, rgba(255,255,255,.06), transparent 70%) }
+.hero { min-height: max(660px, 94svh) }
+/* the hero: the icon's chevrons pressing onto the dawn line (assets/horizon.svg) */
+.hero .art { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none }
+.hero .art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%;
+  transform-origin: 100% 78%; transform: scale(calc(1.02 + var(--conv, 0) * .06)) }
+.hero .art img { animation: alt-in 2.6s cubic-bezier(.2,.7,.2,1) both }
+@keyframes alt-in { from { opacity: 0; transform: scale(1.08) } }
+.hero .art::after { content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(10,24,48,.45) 0%, rgba(10,24,48,0) 20%),
+              radial-gradient(75% 70% at 0% 100%, rgba(10,24,48,.55), rgba(10,24,48,0) 70%) }
+@media (max-width: 760px) { .hero .art img { object-position: 78% 50% } }
+@media (prefers-reduced-motion: reduce) { .hero .art img { animation: none; transform: none } }
+.hero-inner { position: relative; min-height: inherit; display: grid; align-content: end; padding-block: 150px 9vh }
+h1 { font-weight: 200; font-size: clamp(54px, 9.4vw, 136px); line-height: .94; letter-spacing: -.036em; margin-top: 22px }
+h1 span { display: block }
+h1 .second { font-weight: 300; color: rgba(255,255,255,.93) }
+.hero .eyebrow, .dl .eyebrow { color: rgba(255,255,255,.72) }
+.hero .lead, .dl .lead { color: rgba(255,255,255,.84) }
+.ctas { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 36px }
+.meta { margin-top: 22px; font-size: 13px; color: rgba(255,255,255,.64) }
+.reveal { opacity: 0; transform: translateY(18px); animation: rise 1.1s cubic-bezier(.2,.8,.2,1) forwards }
+.d1 { animation-delay: 1.15s } .d2 { animation-delay: 1.3s } .d3 { animation-delay: 1.5s } .d4 { animation-delay: 1.7s } .d5 { animation-delay: 1.85s }
+@keyframes rise { to { opacity: 1; transform: none } }
+.sizecard { position: absolute; right: 0; bottom: 9vh; width: 300px; padding: 18px 20px; border-radius: 18px;
+  background: rgba(28, 50, 88, .72); box-shadow: inset 0 0 0 1px rgba(255,255,255,.16);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.18), 0 20px 50px rgba(5, 15, 35, .25); font-variant-numeric: tabular-nums }
+.sizecard .file { font-size: 13px; color: rgba(255,255,255,.75); display: flex; justify-content: space-between; gap: 10px }
+.sizecard .big { font: 300 40px/1.1 var(--display); letter-spacing: -.02em; margin-top: 8px }
+.sizecard .bar { height: 3px; border-radius: 3px; background: rgba(255,255,255,.18); margin-top: 14px; overflow: hidden }
+.sizecard .bar b { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, #fff, var(--dawn)); transform-origin: left }
+.sizecard .foot { display: flex; justify-content: space-between; margin-top: 10px; font-size: 12.5px; color: rgba(255,255,255,.72) }
+.sizecard .foot b { color: var(--dawn); font-weight: 600 }
+
+/* proof */
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; margin-top: 64px; background: var(--line); border-radius: 22px; overflow: hidden; border: 1px solid var(--line) }
+.stat { background: var(--card); padding: 34px 30px 30px; min-width: 0 }
+.stat .k { font-size: 13px; color: var(--muted) }
+.stat .v { font: 300 clamp(36px, 3.6vw, 48px)/1.05 var(--display); letter-spacing: -.02em; margin-top: 14px; font-variant-numeric: tabular-nums }
+.stat .v small { font-size: .45em; color: var(--muted); letter-spacing: 0; vertical-align: middle }
+.stat p { color: var(--muted); font-size: 15px; margin-top: 14px }
+.bars { display: grid; gap: 6px; margin-top: 18px }
+.bars i { display: block; height: 8px; border-radius: 4px; background: color-mix(in srgb, var(--muted) 28%, transparent) }
+.bars i.b { background: linear-gradient(90deg, var(--accent), var(--dawn-deep)) }
+.dots { display: grid; grid-template-columns: auto 1fr; gap: 6px 10px; align-items: center; margin-top: 18px; font-size: 12px; color: var(--muted) }
+.dots b { display: grid; grid-template-columns: repeat(25, 1fr); gap: 3px }
+.dots b i { aspect-ratio: 1; border-radius: 50%; background: color-mix(in srgb, var(--good) 55%, transparent) }
+.dots b i.x { background: var(--dawn-deep) }
+.tag { display: inline-block; margin-top: 16px; font-size: 12px; padding: 5px 10px; border-radius: 99px; background: color-mix(in srgb, var(--dawn-deep) 14%, transparent); color: var(--dawn-deep); font-weight: 500 }
+
+/* before / after */
+.compare { margin-top: 56px; display: grid; gap: 18px }
+.ba { position: relative; aspect-ratio: 16 / 9; border-radius: 18px; overflow: hidden; background: #F4F4F0; cursor: ew-resize; user-select: none; touch-action: pan-y;
+  box-shadow: 0 30px 80px rgba(10, 25, 50, .18), 0 0 0 1px var(--line); max-width: 100% }
+.ba img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; image-rendering: auto }
+.ba.pixel img { image-rendering: pixelated }
+.ba .after { clip-path: inset(0 0 0 var(--split, 50%)) }
+.ba .handle { position: absolute; top: 0; bottom: 0; left: var(--split, 50%); width: 2px; background: #fff; transform: translateX(-1px); box-shadow: 0 0 12px rgba(0,0,0,.3) }
+.ba .handle::after { content: ""; position: absolute; top: 50%; left: 50%; width: 40px; height: 40px; border-radius: 50%; transform: translate(-50%, -50%);
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230E1F3D' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 6l-5 6 5 6M15 6l5 6-5 6'/%3E%3C/svg%3E") center / 20px no-repeat; box-shadow: 0 4px 16px rgba(0,0,0,.25) }
+.ba .lab { position: absolute; top: 14px; font-size: 12.5px; font-weight: 600; padding: 6px 11px; border-radius: 99px; background: rgba(6, 14, 30, .78); color: #fff }
+.ba .lab.l { left: 14px } .ba .lab.r { right: 14px }
+.ba input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; margin: 0 }
+.ba-bar { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; justify-content: space-between; font-size: 14px; color: var(--muted) }
+.seg { display: inline-flex; padding: 3px; border-radius: 99px; background: var(--bg-2); border: 1px solid var(--line) }
+.seg button { border: 0; background: transparent; color: var(--muted); font: 500 13.5px/1 var(--body); padding: 9px 15px; border-radius: 99px; cursor: pointer }
+.seg button[aria-pressed="true"] { background: var(--card); color: var(--fg); box-shadow: 0 1px 3px rgba(0,0,0,.12) }
+.seg button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 22px }
+.facts b { color: var(--fg); font-weight: 600 }
+
+/* how it works */
+.steps { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 22px; margin-top: 72px }
+.thread { position: absolute; left: 0; right: 0; top: 34px; height: 70px; pointer-events: none; overflow: visible }
+.thread path { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-linecap: round; stroke-dasharray: 1400; stroke-dashoffset: 1400; transition: stroke-dashoffset 2.4s cubic-bezier(.4,0,.2,1); opacity: .45 }
+.steps.in .thread path { stroke-dashoffset: 0 }
+.step { position: relative; min-width: 0 }
+.step .dot { width: 68px; height: 68px; border-radius: 20px; display: grid; place-items: center; background: var(--card); border: 1px solid var(--line);
+  box-shadow: 0 10px 30px rgba(20, 40, 80, .07); position: relative; z-index: 1 }
+.step .dot svg { width: 34px; height: 34px; color: var(--accent) }
+.step:last-child .dot { background: radial-gradient(circle at 50% 50%, #fff 0 18%, var(--dawn) 19% 34%, transparent 35%), var(--card) }
+.step h3 { margin-top: 24px; font-size: 19px }
+.step p { color: var(--muted); font-size: 15px; margin-top: 8px }
+.step .n { font: 500 12px var(--mono); color: var(--muted); margin-top: 20px; display: block }
+
+/* features */
+.features { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 64px }
+.feature { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 30px; display: grid; gap: 14px; align-content: start; min-width: 0;
+  position: relative; transition: transform .45s cubic-bezier(.2,.8,.2,1) }
+.feature::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .45s;
+  box-shadow: 0 24px 60px rgba(20, 40, 80, .1) }
+.feature:hover { transform: translateY(-4px) }
+.feature:hover::after { opacity: 1 }
+.feature .art { height: 120px; border-radius: 14px; overflow: hidden; background: linear-gradient(160deg, #13284B, #3E6AA5 70%, #9DBAE0); position: relative }
+.feature .art svg { position: absolute; inset: 0; width: 100%; height: 100% }
+.feature p { color: var(--muted); font-size: 15.5px }
+.feature .fine { font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 12px; margin-top: 4px }
+.feature .fine b { color: var(--fg); font-weight: 600 }
+
+/* studio window */
+.studio { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 56px; align-items: center; margin-top: 10px }
+.window { border-radius: 14px; overflow: hidden; background: #111A2A; color: #E4EBF5; box-shadow: 0 40px 100px rgba(10, 25, 50, .3), 0 0 0 1px rgba(255,255,255,.06); font: 13px/1.4 -apple-system, var(--body) }
+.window .bar { height: 38px; display: flex; align-items: center; gap: 8px; padding: 0 14px; background: #162135; border-bottom: 1px solid #22304A }
+.window .bar i { width: 11px; height: 11px; border-radius: 50% } .window .bar i:nth-child(1) { background: #FF5F57 } .window .bar i:nth-child(2) { background: #FEBC2E } .window .bar i:nth-child(3) { background: #28C840 }
+.window .bar span { margin: 0 auto; font-weight: 600; font-size: 12.5px; color: #8796AD }
+.window .stage { position: relative; aspect-ratio: 16 / 8.4; background: #F4F4F0 }
+.window .stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity .5s }
+.window .tabs { position: absolute; top: 12px; left: 12px; display: flex; gap: 4px; padding: 3px; border-radius: 9px; background: rgba(0,0,0,.72) }
+.window .tabs span { padding: 5px 10px; border-radius: 7px; font-size: 11.5px; color: rgba(255,255,255,.75) }
+.window .tabs span.on { background: rgba(255,255,255,.18); color: #fff }
+.window .opts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; padding: 12px }
+.opt { border-radius: 10px; padding: 11px 12px; background: #172238; border: 1px solid #22304A; min-width: 0 }
+.opt.on { border-color: #8FB6E8; box-shadow: 0 0 0 1px #8FB6E8 }
+.opt .h { display: flex; align-items: center; gap: 7px; font-weight: 600; font-size: 12.5px }
+.opt .h b { width: 18px; height: 18px; border-radius: 50%; background: #8FB6E8; color: #0F1625; display: grid; place-items: center; font-size: 11px }
+.opt dl { display: grid; grid-template-columns: auto 1fr; gap: 3px 8px; margin: 9px 0 0; font-size: 11.5px }
+.opt dt { color: #8796AD } .opt dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums }
+.opt dd.good { color: #6FC79E } .opt dd.warn { color: #F0B28C }
+.bullets { display: grid; gap: 18px; margin-top: 30px }
+.bullets div { display: grid; grid-template-columns: 26px 1fr; gap: 12px; color: var(--muted); font-size: 15.5px }
+.bullets svg { width: 22px; height: 22px; color: var(--accent); margin-top: 2px }
+.bullets b { color: var(--fg); font-weight: 600 }
+
+/* formats */
+.tablewrap { overflow-x: auto; margin-top: 56px; border-radius: 20px; border: 1px solid var(--line); background: var(--card) }
+table { width: 100%; border-collapse: collapse; font-size: 15px; min-width: 720px }
+th, td { text-align: left; padding: 18px 22px; border-bottom: 1px solid var(--line); vertical-align: top }
+tr:last-child td { border-bottom: 0 }
+th { font: 500 12px var(--body); letter-spacing: .1em; text-transform: uppercase; color: var(--muted) }
+td .sub { display: block; color: var(--muted); font-size: 13px; margin-top: 3px }
+td.n { font-variant-numeric: tabular-nums; white-space: nowrap }
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; padding: 4px 10px; border-radius: 99px; white-space: nowrap }
+.pill.y { background: color-mix(in srgb, var(--good) 13%, transparent); color: var(--good) }
+.pill.n { background: color-mix(in srgb, var(--dawn-deep) 13%, transparent); color: var(--dawn-deep) }
+.src { margin-top: 18px; font-size: 13px; color: var(--muted) }
+
+/* download */
+.dl { padding-block: clamp(110px, 14vw, 180px); text-align: center }
+/* the closing panel: the dawn line on its own (assets/horizon-plain.svg) */
+.dl .art { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none }
+.dl .art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 78% 72% }
+.dl .art::after { content: ""; position: absolute; inset: 0;
+  background: radial-gradient(60% 50% at 50% 32%, rgba(10,24,48,.38), rgba(10,24,48,0) 75%),
+              linear-gradient(180deg, rgba(10,24,48,.5) 0%, rgba(10,24,48,.12) 40%, rgba(10,24,48,0) 70%, rgba(10,24,48,.35) 100%) }
+.dl h2 { color: #fff; font-size: clamp(42px, 6.4vw, 88px); font-weight: 200 }
+.dl .lead { margin-left: auto; margin-right: auto }
+.dl .ctas { justify-content: center }
+.dl .req { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 26px }
+.dl .req span { font-size: 13px; padding: 7px 13px; border-radius: 99px; background: rgba(255,255,255,.1); box-shadow: inset 0 0 0 1px rgba(255,255,255,.18); color: rgba(255,255,255,.88) }
+.first { margin: 64px auto 0; max-width: 880px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; text-align: left }
+.first div { padding: 22px; border-radius: 18px; background: rgba(14, 30, 58, .72); box-shadow: inset 0 0 0 1px rgba(255,255,255,.14); font-size: 14.5px; color: rgba(255,255,255,.86) }
+.first b { display: block; font: 500 12px var(--mono); color: var(--dawn); margin-bottom: 8px; letter-spacing: .04em }
+
+/* faq */
+.faq { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 64px; align-items: start }
+details { border-bottom: 1px solid var(--line) }
+summary { list-style: none; cursor: pointer; padding: 22px 40px 22px 0; font: 500 19px/1.35 var(--display); position: relative }
+summary::-webkit-details-marker { display: none }
+summary::after { content: ""; position: absolute; right: 6px; top: 50%; width: 12px; height: 12px; border-right: 1.5px solid var(--muted); border-bottom: 1.5px solid var(--muted); transform: translateY(-70%) rotate(45deg); transition: transform .3s }
+details[open] summary::after { transform: translateY(-30%) rotate(225deg) }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px }
+details p { color: var(--muted); padding-bottom: 24px; max-width: 46em }
+
+/* footer */
+footer { border-top: 1px solid var(--line); padding-block: 48px 64px; font-size: 14px; color: var(--muted) }
+footer .row { display: flex; flex-wrap: wrap; gap: 18px 36px; align-items: center; justify-content: space-between }
+footer .brand { color: var(--fg) }
+footer nav { position: static; padding: 0; color: inherit; display: flex; gap: 22px; flex-wrap: wrap; background: none; transform: none; isolation: auto }
+footer nav::before { display: none }
+footer a { text-decoration: none } footer a:hover { color: var(--fg) }
+footer .legal { margin-top: 24px; font-size: 12.5px; max-width: 62em }
+
+@media (max-width: 1000px) {
+  .steps { grid-template-columns: 1fr 1fr; } .thread { display: none }
+  .features { grid-template-columns: 1fr 1fr }
+  .studio { grid-template-columns: 1fr; gap: 40px }
+  .faq { grid-template-columns: 1fr; gap: 24px }
+}
+@media (max-width: 760px) {
+  nav .links { display: none }
+  .sizecard { position: relative; right: auto; bottom: auto; margin-top: 40px; width: 100% }
+  .hero-inner { padding-bottom: 56px }
+  .stats, .features, .first { grid-template-columns: 1fr }
+  .steps { grid-template-columns: 1fr }
+  .window .opts { grid-template-columns: 1fr }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal { animation: none; opacity: 1; transform: none }
+  .js .rise:not(.in) { opacity: 1; transform: none }
+  .thread path { transition: none; stroke-dashoffset: 0 }
+  html { scroll-behavior: auto }
+}
+/* footer theme switch (same as the Digby home page; the choice is shared across the family) */
+footer nav { align-items: center }
+footer .theme { display: inline-grid; place-items: center; width: 30px; height: 30px; margin: -6px -6px -6px 0; padding: 0; border: 0; border-radius: 50%; background: none;
+  color: inherit; cursor: pointer; transition: color .2s, background-color .2s }
+footer .theme:hover { color: #fff; background: rgba(255, 255, 255, .06) }
+footer .theme:focus-visible { outline: 2px solid #F2C2A0; outline-offset: 2px }
+.theme svg { width: 15px; height: 15px; grid-area: 1 / 1 }
+.theme .sun { display: none }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .theme .sun { display: block } :root:not([data-theme="light"]) .theme .moon { display: none } }
+:root[data-theme="dark"] .theme .sun { display: block }
+:root[data-theme="dark"] .theme .moon { display: none }
+</style>
+<link rel="stylesheet" href="assets/cp-page.css">
+<script>try { const t = localStorage.getItem("digby-theme"); if (t) document.documentElement.dataset.theme = t } catch (e) {}</script>
+</head>
+<body class="alt">
+<script>document.documentElement.classList.add('js')</script>
+
+<nav id="nav">
+  <a class="brand digby-lockup" href="../digby/" aria-label="Digby home">
+    <span class="dg-mark">Digby</span><span class="dg-rule" aria-hidden="true"></span><span class="dg-product">Video Compressor</span>
+  </a>
+  <div class="links"><a href="#results">Results</a><a class="nav-opt" href="#how">How it works</a><a href="#features">Features</a><a href="#formats">Formats</a><a href="#faq">FAQ</a></div>
+  <a class="btn btn-light btn-small" href="#download" data-pull>Download</a>
+</nav>
+
+<header class="sky hero" id="top">
+  <div class="art" aria-hidden="true"><img src="assets/horizon.svg" alt="" decoding="async"></div>
+  <div class="wrap hero-inner">
+    <div class="eyebrow reveal d1">Video compressor for macOS · Free</div>
+    <h1><span class="reveal d2">Less weight.</span><span class="second reveal d3">Same picture.</span></h1>
+    <p class="lead reveal d4">Digby measures your video and finds the smallest file that still looks like the original, with any text in it, from slides to subtitles, still sharp enough to read.</p>
+    <div class="ctas reveal d5">
+      <a class="btn btn-light" href="#download" data-download data-pull><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5v9m0 0L4.2 6.8M8 10.5l3.8-3.7M2.5 14h11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Download for Mac</a>
+      <a class="btn btn-ghost" href="#results">See the results</a>
+    </div>
+    <div class="meta reveal d5">Version <span data-version>1.1.0</span> · Apple Silicon · macOS 26 or later · Nothing leaves your Mac</div>
+    <aside class="sizecard reveal d5" aria-label="A measured example">
+      <div class="file"><span>Lecture recording · 1 hour</span><span>1080p</span></div>
+      <div class="big" id="sizeNum">311 MB</div>
+      <div class="bar"><b id="sizeBar"></b></div>
+      <div class="foot"><span id="sizeState">Scroll to compress</span><b id="sizePct"></b></div>
+    </aside>
+  </div>
+</header>
+
+<main>
+<section class="ch ch-haze" id="results">
+  <div class="wrap">
+    <div class="eyebrow rise"><b>01</b>Measured, not promised</div>
+    <h2 class="rise">Every number here was measured on a Mac, on real footage.</h2>
+    <p class="lead rise">Digby doesn’t guess. It test-encodes your own video, scores the result with Netflix’s VMAF quality model, and reads the on-screen text back with Apple’s text recognition before it commits.</p>
+    <div class="readout">
+      <div class="stat rise">
+        <div class="k">A 1-hour lecture recording</div>
+        <div class="v num">311 MB<small>→</small>80 MB</div>
+        <p>A typical screen recording of a one-hour slide lecture, 4× smaller. Every slide still reads perfectly, footnotes included.</p>
+        <div class="bars" aria-hidden="true"><i style="width:100%"></i><i class="b" style="width:26%"></i></div>
+        <span class="tag">HEVC · plays in Finder’s preview</span>
+      </div>
+      <div class="stat rise" style="--d:1">
+        <div class="k">Text in camera footage</div>
+        <div class="v num">88%<small>→</small>98%</div>
+        <p>How much of the on-screen text stays readable after compressing. “Keep text readable” adds detail only where there are words, so the file stays small.</p>
+        <div class="dots" aria-hidden="true"><span>Without</span><b data-bad="6"></b><span>With</span><b data-bad="1"></b></div>
+        <span class="tag">Checked by reading the text back</span>
+      </div>
+      <div class="stat rise" style="--d:2">
+        <div class="k">Animation and screen recordings</div>
+        <div class="v num">5×<small>smaller</small></div>
+        <p>Than H.264, the format most video uses, at the same picture quality. That’s AV1, the format behind YouTube and Netflix streams.</p>
+        <div class="bars" aria-hidden="true"><i style="width:100%"></i><i class="b" style="width:21%"></i></div>
+        <span class="tag">Measured on 8 test clips</span>
+      </div>
+    </div>
+
+    <div class="compare rise">
+      <div class="specimen">
+        <div class="ba" id="ba" style="--split:50%">
+          <img data-before src="assets/lecture-original.jpg" alt="Lecture slide from the 346 MB ProRes original" width="1600" height="900" loading="lazy">
+          <img class="after" data-after src="assets/lecture-digby.jpg" alt="The same slide from the 246 KB file made by Digby" width="1600" height="900" loading="lazy">
+          <div class="handle" aria-hidden="true"></div>
+          <span class="lab l">Original · 346 MB</span><span class="lab r">Digby · 246 KB</span>
+          <input type="range" min="0" max="100" value="50" step="0.1" id="baRange" aria-label="Drag to compare the original with the Digby version">
+        </div>
+        <div class="ba-bar">
+          <div class="seg" role="group" aria-label="View">
+            <button type="button" aria-pressed="true" data-view="full">Whole slide</button>
+            <button type="button" aria-pressed="false" data-view="detail">Small text, 2× pixels</button>
+          </div>
+          <div class="facts"><span>AV1 · <b>VMAF 95.4</b></span><span>Text read identically: <b>100 %</b></span><span><b class="num">1,406×</b> smaller</span></div>
+        </div>
+      </div>
+      <p class="hint"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7l-5 5 5 5M15 7l5 5-5 5"/><path class="a" d="M12 4v16"/></svg>Drag across the slide to compare</p>
+    </div>
+  </div>
+</section>
+
+<section class="ch ch-alt" id="how">
+  <div class="wrap">
+    <div class="ch-head center">
+      <div class="eyebrow rise"><b>02</b>How it works</div>
+      <h2 class="rise">It tests before it compresses.</h2>
+      <p class="lead rise">Most compressors apply one fixed setting to every video. A static lecture and a crowd scene need wildly different amounts of data, so Digby finds the right setting for each one.</p>
+    </div>
+    <figure class="stage-app">
+      <div class="shot">
+        <picture>
+          <source srcset="assets/cp/app-dark.webp" media="(prefers-color-scheme: dark)">
+          <img src="assets/cp/app-light.webp" alt="The Digby Video Compressor window with a lecture recording analysed: text detected, HEVC chosen so it previews in Finder, and the settings it will use" width="2560" height="1523" loading="lazy">
+        </picture>
+        <div class="result">
+          <picture>
+            <source srcset="assets/cp/progress-dark.webp" media="(prefers-color-scheme: dark)">
+            <img src="assets/cp/progress-light.webp" alt="Another lecture being compressed with HEVC at 1920 × 1080, showing its progress and the time left" width="1638" height="395" loading="lazy">
+          </picture>
+        </div>
+      </div>
+    </figure>
+
+    <ol class="steps rise" id="steps">
+      <svg class="thread" viewBox="0 0 1000 56" preserveAspectRatio="none" aria-hidden="true">
+        <defs><linearGradient id="cp-thread" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#8FB6E8" stop-opacity=".1"/><stop offset=".55" stop-color="#8FB6E8" stop-opacity=".5"/><stop offset="1" stop-color="#F2C2A0" stop-opacity=".95"/></linearGradient></defs>
+        <path d="M0 6 C 380 6, 640 28, 1000 28"/><path d="M0 28 L 1000 28"/><path d="M0 50 C 380 50, 640 28, 1000 28"/>
+      </svg>
+      <li class="step"><span class="glyph"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="2.5"/><path d="M7 9.5h6M7 12.5h8"/><path class="a" d="M3 20.5h18"/></svg></span><span class="n">01</span><h3>Look</h3><p>Measures motion, detail, grain and noise, and finds slides, captions and other text.</p></li>
+      <li class="step"><span class="glyph"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="4" rx="1.5"/><rect x="3" y="10" width="18" height="4" rx="1.5"/><rect class="a" x="3" y="16" width="18" height="4" rx="1.5"/></svg></span><span class="n">02</span><h3>Test</h3><p>Encodes about 20 seconds of representative scenes at several settings.</p></li>
+      <li class="step"><span class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M4 17a8 8 0 0 1 16 0"/><path d="M6.4 11.3l1.2 1M12 9v1.5M17.6 11.3l-1.2 1"/><path class="a" d="M12 17l4-5"/><circle class="af" cx="12" cy="17" r="1.4"/></svg></span><span class="n">03</span><h3>Measure</h3><p>Scores each one with VMAF and reads the text back, then keeps the smallest that passes.</p></li>
+      <li class="step"><span class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M3 6c6 0 9 6 16 6M3 12h16M3 18c6 0 9-6 16-6"/><circle class="af" cx="20.5" cy="12" r="1.6"/></svg></span><span class="n">04</span><h3>Compress</h3><p>AV1, HEVC or H.264 with the measured setting, in two passes for size targets.</p></li>
+      <li class="step"><span class="glyph"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path class="a" d="M8.2 12.3l2.6 2.6 5-5.4"/></svg></span><span class="n">05</span><h3>Verify</h3><p>Checks length, sound, size and text on the finished file. Your original is never touched.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="ch ch-haze" id="features">
+  <div class="wrap">
+    <div class="eyebrow rise"><b>03</b>What it does</div>
+    <h2 class="rise">Simple on the surface. Careful underneath.</h2>
+    <div class="bento">
+      <article class="tile wide t-6 rise">
+        <div class="copy">
+          <span class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M4 6h11M4 10h8M4 14h6"/><circle class="a" cx="16" cy="15" r="3.5"/><path class="a" d="M18.6 17.6l2.4 2.4"/></svg></span>
+          <h3>Keeps text readable</h3>
+          <p>Finds the slides, captions and code in your video, then raises quality only until that text reads the same as in the original. It never shrinks the resolution past the point where the smallest text survives.</p>
+          <p class="fine">Text in camera footage: <b>88 % → 98 %</b> readable.</p>
+        </div>
+        <div class="screen"><picture><source srcset="assets/cp/text-dark.webp" media="(prefers-color-scheme: dark)"><img src="assets/cp/text-light.webp" alt="Keep text readable, switched on because text was detected in all 8 sampled moments, and the estimate measured on the video’s own scenes" width="1740" height="662" loading="lazy" style="--min:760px"></picture></div>
+      </article>
+      <article class="tile t-3 rise">
+        <span class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M5 20V9M10 20V6M15 20v-6"/><path class="a" d="M3 4h18" stroke-dasharray="2 2.6"/><path d="M20 20v-9"/></svg></span>
+        <h3>Hits an exact file size</h3>
+        <p>Ask for “under 25 MB” and that’s what you get. Digby subtracts the audio first, encodes in two passes, checks the file, and re-encodes if it came out even slightly over.</p>
+        <p class="fine">If a lower resolution would look better at your size, it measures that too.</p>
+        <div class="screen"><picture><source srcset="assets/cp/size-dark.webp" media="(prefers-color-scheme: dark)"><img src="assets/cp/size-light.webp" alt="The File size setting: choose a quality level or a file size" width="1750" height="268" loading="lazy" style="--min:880px"></picture></div>
+      </article>
+      <article class="tile t-3 rise" style="--d:1">
+        <span class="glyph"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="8" height="7" rx="1.6"/><rect x="13" y="4" width="8" height="7" rx="1.6"/><rect x="3" y="13" width="8" height="7" rx="1.6"/><rect class="a" x="13" y="13" width="8" height="7" rx="1.6"/></svg></span>
+        <h3>Preview Studio</h3>
+        <p>Compare up to four options on your own video’s frames before you commit: exact sizes, dimensions, quality, text legibility and time, flipping between them at actual pixels.</p>
+        <p class="fine">The moments with the smallest text and the most motion are picked for you.</p>
+        <div class="screen"><picture><source srcset="assets/cp/options-dark.webp" media="(prefers-color-scheme: dark)"><img src="assets/cp/options-light.webp" alt="Option cards in Preview Studio, each measured on the video’s own scenes" width="1558" height="550" loading="lazy" style="--min:620px"></picture></div>
+      </article>
+      <article class="tile t-2 rise">
+        <span class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M3 7.5V18a1.5 1.5 0 0 0 1.5 1.5h15A1.5 1.5 0 0 0 21 18V9a1.5 1.5 0 0 0-1.5-1.5H12L10 5H4.5A1.5 1.5 0 0 0 3 6.5z"/><path class="a" d="M9 13.5h6M13 11.5l2 2-2 2"/></svg></span>
+        <h3>Whole folders, done right</h3>
+        <p>Drop a folder of folders and every video is found. Compressed copies go next to the originals, or replace them: the original goes to the Trash only after its copy is verified, keeping its name and dates.</p>
+        <p class="fine">Other files are never touched. Earlier outputs are skipped automatically.</p>
+      </article>
+      <article class="tile t-2 rise" style="--d:1">
+        <span class="glyph"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="2.5"/><path class="a" d="M10.5 8.8v4.4l3.8-2.2z"/><path d="M8 20.5h8"/></svg></span>
+        <h3>Previews in Finder</h3>
+        <p>Files play with the space bar, in QuickTime and in Photos on your Mac. Digby knows which Macs can decode AV1 and uses HEVC where they can’t, or AV1 for the smallest files when you prefer.</p>
+        <p class="fine">Every result says whether it plays in Quick Look on this Mac.</p>
+      </article>
+      <article class="tile t-2 dark rise" style="--d:2">
+        <span class="glyph"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/><circle class="af" cx="12" cy="15.5" r="1.5"/></svg></span>
+        <h3>Private by design</h3>
+        <p>Everything happens on your Mac. Nothing is uploaded, there’s no account, and no analytics. The encoders (FFmpeg with SVT-AV1, x265, x264 and Opus) are built into the app.</p>
+        <p class="fine">Batches survive quitting and keep your Mac awake until they’re done.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<div class="breath" aria-hidden="true"><img src="assets/horizon-plain.svg" alt="" loading="lazy" decoding="async"></div>
+
+<section class="ch ch-alt" id="studio">
+  <div class="wrap studio">
+    <div>
+      <div class="eyebrow rise"><b>04</b>Preview Studio</div>
+      <h2 class="rise">See it before you squeeze it.</h2>
+      <div class="bullets rise">
+        <div><span class="glyph"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path class="a" d="M3 15l5-4 4 3 3-2 6 4"/></svg></span><span><b>Real frames, exact settings.</b> Each option encodes your chosen moments with exactly the settings the final file would use.</span></div>
+        <div><span class="glyph"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path class="a" d="M12 7.5V12l3 2"/></svg></span><span><b>Numbers before minutes.</b> Size, dimensions, VMAF, text legibility and encode time for every option.</span></div>
+        <div><span class="glyph"><svg class="ic" viewBox="0 0 24 24"><path d="M9 6l-5 6 5 6"/><path class="a" d="M15 6l5 6-5 6"/></svg></span><span><b>Flip, don’t squint.</b> Arrow keys switch between the original and each option at actual pixels.</span></div>
+      </div>
+    </div>
+    <div class="studio-stage rise">
+      <div class="shot back">
+        <picture>
+          <source srcset="assets/cp/studio-dark.webp" media="(prefers-color-scheme: dark)">
+          <img src="assets/cp/studio-light.webp" alt="Preview Studio in the app: the original and three options, the chosen moments, and each option’s settings" width="2560" height="1824" loading="lazy">
+        </picture>
+      </div>
+      <div class="window" aria-label="Illustration of the Preview Studio window">
+        <div class="bar"><i></i><i></i><i></i><span>Preview Studio</span><em>The slide from 01 · actual pixels</em></div>
+        <div class="stage">
+          <img id="studioImg" src="assets/lecture-detail-original.png" alt="Detail of a lecture slide as shown in Preview Studio" width="1280" height="720" loading="lazy">
+          <img id="studioImg2" src="assets/lecture-detail-digby.png" alt="" aria-hidden="true" width="1280" height="720" loading="lazy" style="opacity:0">
+          <div class="tabs" id="studioTabs"><span class="on">Original</span><span>A · Your settings</span><span>B · Smaller</span></div>
+        </div>
+        <div class="opts">
+          <div class="opt on"><div class="h"><b>A</b>Your settings</div><dl><dt>Size</dt><dd>≈ 246 KB</dd><dt>Format</dt><dd>AV1 · 1080p</dd><dt>Quality</dt><dd>VMAF 95.4</dd><dt>Text</dt><dd class="good">100 % same</dd></dl></div>
+          <div class="opt"><div class="h"><b>B</b>HEVC</div><dl><dt>Size</dt><dd>≈ 715 KB</dd><dt>Format</dt><dd>HEVC · 1080p</dd><dt>Quality</dt><dd>VMAF 94.4</dd><dt>Quick Look</dt><dd class="good">Plays</dd></dl></div>
+          <div class="opt"><div class="h"><b>C</b>720p</div><dl><dt>Size</dt><dd>smaller</dd><dt>Format</dt><dd>AV1 · 720p</dd><dt>Smallest text</dt><dd class="warn">13 px</dd><dt>Advice</dt><dd class="warn">Keep 1080p</dd></dl></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ch ch-haze" id="formats">
+  <div class="wrap">
+    <div class="eyebrow rise"><b>05</b>Formats, plainly</div>
+    <h2 class="rise">The right format for where it’s going.</h2>
+    <p class="lead rise">Digby explains every choice in plain English, with the trade-offs measured on real footage. These are the four you choose between.</p>
+    <div class="tablewrap rise">
+      <table>
+        <thead><tr><th>Format</th><th>Best for</th><th>File size, camera footage</th><th>File size, animation &amp; slides</th><th>Finder preview on M1/M2</th></tr></thead>
+        <tbody>
+          <tr><td><b>AV1</b><span class="sub">Smallest file</span></td><td data-label="Best for">Uploads, archives, the web<span class="sub">Browsers, VLC, IINA, YouTube, M3+ Macs</span></td><td class="n" data-label="File size, camera footage">Smallest</td><td class="n" data-label="File size, animation &amp; slides">Smallest</td><td data-label="Finder preview on M1/M2"><span class="pill n">No</span></td></tr>
+          <tr><td><b>HEVC</b><span class="sub">Apple devices</span></td><td data-label="Best for">Watching on Apple devices<span class="sub">Every modern Mac, iPhone, iPad, Apple TV</span></td><td class="n" data-label="File size, camera footage">7 % bigger</td><td class="n" data-label="File size, animation &amp; slides">2.2× bigger</td><td data-label="Finder preview on M1/M2"><span class="pill y">Yes</span></td></tr>
+          <tr><td><b>H.264</b><span class="sub">Plays everywhere</span></td><td data-label="Best for">Sending to anyone<span class="sub">Old PCs, TVs, any editor</span></td><td class="n" data-label="File size, camera footage">28 % bigger</td><td class="n" data-label="File size, animation &amp; slides">4.6× bigger</td><td data-label="Finder preview on M1/M2"><span class="pill y">Yes</span></td></tr>
+          <tr><td><b>Hardware HEVC</b><span class="sub">Fastest</span></td><td data-label="Best for">When time matters most<span class="sub">Apple Silicon media engine, 4–18× faster</span></td><td class="n" data-label="File size, camera footage">79 % bigger</td><td class="n" data-label="File size, animation &amp; slides">4.3× bigger</td><td data-label="Finder preview on M1/M2"><span class="pill y">Yes</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="src rise">Sizes compared with AV1 for the same picture quality. Median bitrate at equal VMAF (85–95) over 8 test clips, measured with SVT-AV1 4.3, x265 4.3, x264 and VideoToolbox on an M1 Max. Methodology and raw results are in the source repository.</p>
+  </div>
+</section>
+
+<section class="sky dl" id="download">
+  <div class="art" aria-hidden="true"><img src="assets/horizon-plain.svg" alt="" loading="lazy" decoding="async"></div>
+  <div class="wrap">
+    <div class="eyebrow rise" style="justify-content:center">Free for macOS</div>
+    <h2 class="rise">Make room. Keep the picture.</h2>
+    <p class="lead rise">One download. Everything it needs is inside: no Homebrew, no command line, no account.</p>
+    <div class="ctas rise">
+      <a class="btn btn-light" href="#download" data-download data-pull><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5v9m0 0L4.2 6.8M8 10.5l3.8-3.7M2.5 14h11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Download Digby <span data-version>1.1.0</span></a>
+      <a class="btn btn-ghost" href="#" data-source>Source code</a>
+    </div>
+    <div class="req rise"><span>Apple Silicon (M1 or later)</span><span>macOS 26 or later</span><span>22 MB download</span></div>
+    <ol class="first rise">
+      <li><b>01 · OPEN</b>Open the downloaded file and drag Digby Video Compressor to Applications.</li>
+      <li><b>02 · FIRST LAUNCH</b>macOS can’t check apps from independent developers, so right-click Digby Video Compressor and choose <em>Open</em>.</li>
+      <li><b>03 · CONFIRM</b>Click <em>Open</em> once more. From then on it opens like any other app.</li>
+    </ol>
+  </div>
+</section>
+
+<section class="ch ch-haze" id="faq">
+  <div class="wrap faq">
+    <div><div class="eyebrow rise"><b>06</b>Questions</div><h2 class="rise">Good to know.</h2></div>
+    <div class="qs rise">
+      <details><summary>Is it really free?</summary><p>Yes. There’s no trial, account or subscription. The source code is public.</p></details>
+      <details><summary>Does it upload my videos?</summary><p>No. Analysis, compression and quality measurement all run on your Mac. Digby doesn’t connect to the internet.</p></details>
+      <details><summary>Why does macOS warn me the first time I open it?</summary><p>Apple only pre-approves apps from developers in its paid programme. Digby is signed but not notarised, so the first launch needs right-click → Open. After that it opens normally.</p></details>
+      <details><summary>Will my original be changed?</summary><p>Not unless you choose “Replace originals”. Even then, the original only goes to the Trash after the compressed copy is finished and verified to play, be the same length, have its sound, and be smaller. You can restore it from the Trash.</p></details>
+      <details><summary>Why HEVC and not AV1 on my Mac?</summary><p>M1 and M2 Macs can’t decode AV1 in Finder’s preview, QuickTime or Photos. Digby uses HEVC there so your files just play. Choose “AV1 · Smallest” under Format to get AV1, which is smaller.</p></details>
+      <details><summary>What is VMAF?</summary><p>A model of how people judge video quality, developed by Netflix with university researchers. Digby uses it to aim for a quality level (93 for Balanced, 97 for Maximum) and to measure every finished file. It under-rates text sharpness, which is why text is checked separately.</p></details>
+      <details><summary>Does it work on Intel Macs or older macOS?</summary><p>Not yet. This version needs Apple Silicon and macOS 26 or later.</p></details>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="row">
+      <a class="brand" href="#top"><span class="mark">Digby</span></a>
+      <nav aria-label="Footer"><a href="#download">Download</a><a href="#" data-source>Source code</a><a href="#" data-releases>Release notes</a><a href="#faq">FAQ</a>
+        <button class="theme" type="button" aria-label="Switch to dark mode" title="Switch to dark mode">
+        <svg class="moon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1Z"/></svg>
+        <svg class="sun" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="2.8"/><path d="M8 1.5v1.3M8 13.2v1.3M1.5 8h1.3M13.2 8h1.3M3.4 3.4l.9.9M11.7 11.7l.9.9M3.4 12.6l.9-.9M11.7 4.3l.9-.9"/></svg>
+      </button></nav>
+    </div>
+    <p class="legal">© 2026 Digby. Digby Video Compressor includes FFmpeg, SVT-AV1, x265, x264, Opus and libvmaf, distributed under their own licences; FFmpeg in this build is licensed under the GPL, and its source code is available from ffmpeg.org. Quality figures are measurements on the test footage described in the repository and will differ for other videos.</p>
+  </div>
+</footer>
+
+<script>
+// Footer theme switch: follows the Mac's setting until clicked, then remembers the choice (shared with the other Digby pages).
+// Screenshots chosen by <source media="(prefers-color-scheme: dark)"> follow the switch too.
+(() => {
+  const root = document.documentElement, btn = document.querySelector("footer .theme"), mq = matchMedia("(prefers-color-scheme: dark)");
+  const sources = [...document.querySelectorAll('source[media*="prefers-color-scheme: dark"]')];
+  sources.forEach(s => s.dataset.media = s.media);
+  const isDark = () => root.dataset.theme ? root.dataset.theme === "dark" : mq.matches;
+  const apply = () => {
+    const t = root.dataset.theme;
+    sources.forEach(s => s.media = t ? (t === "dark" ? "all" : "not all") : s.dataset.media);
+    const l = isDark() ? "Switch to light mode" : "Switch to dark mode"; btn.setAttribute("aria-label", l); btn.title = l;
+    dispatchEvent(new Event("digby-theme"));
+  };
+  btn.addEventListener("click", () => {
+    root.dataset.theme = isDark() ? "light" : "dark";
+    try { localStorage.setItem("digby-theme", root.dataset.theme) } catch (e) {}
+    apply();
+  });
+  mq.addEventListener("change", apply);
+  apply();
+})();
+</script>
+
+<script>
+/* Where downloads come from: set once when the GitHub repository exists. */
+const DIGBY = { repo: "digbyapps/digby-video-compressor", version: "1.1.0", asset: "Digby-Video-Compressor.dmg" };
+
+(() => {
+  // links
+  if (DIGBY.repo) {
+    const gh = `https://github.com/${DIGBY.repo}`;
+    document.querySelectorAll('[data-download]').forEach(a => a.href = `${gh}/releases/latest/download/${DIGBY.asset}`);
+    document.querySelectorAll('[data-source]').forEach(a => a.href = gh);
+    document.querySelectorAll('[data-releases]').forEach(a => a.href = `${gh}/releases`);
+  }
+  document.querySelectorAll('[data-version]').forEach(e => e.textContent = DIGBY.version);
+
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ease = t => 1 - Math.pow(1 - Math.min(1, Math.max(0, t)), 3);
+
+  // hero: scrolling eases the artwork gently toward the dawn line (--conv)
+  const art = document.querySelector('.hero .art');
+  const hero = { state: { conv: 0 }, redraw() { if (!reduce) art.style.setProperty('--conv', this.state.conv.toFixed(3)); } };
+  // scroll: the hero converges and the measured example compresses
+  const nav = document.getElementById('nav'), heroEl = document.getElementById('top');
+  const num = document.getElementById('sizeNum'), bar = document.getElementById('sizeBar'), pct = document.getElementById('sizePct'), st = document.getElementById('sizeState');
+  const FROM = 311355937, TO = 80121862;   // measured: 1-hour lecture recording (Benchmarks/make_long_lecture.py), default settings
+  const fmt = b => b >= 1e9 ? (b / 1e9).toFixed(2) + ' GB' : b >= 1e6 ? Math.round(b / 1e6) + ' MB' : Math.round(b / 1e3) + ' KB';
+  // the bar turns solid just before it would overlap the first line of the hero
+  const firstLine = heroEl.querySelector('.eyebrow');
+  const docTop = el => { let t = 0; for (; el; el = el.offsetParent) t += el.offsetTop; return t; };
+  const solidAt = () => docTop(firstLine) - nav.offsetHeight - 16;
+  let heroH = heroEl.offsetHeight, edge = solidAt(), solid = false, ticking = false;
+  const last = {};
+  const put = (el, key, v) => { if (last[key] !== v) { last[key] = v; if (key === 'bar') el.style.transform = v; else el.textContent = v; } };
+  function update() {
+    ticking = false;
+    const y = scrollY;
+    hero.state.conv = Math.min(1, Math.max(0, y / (heroH * 0.75)));
+    // hysteresis: the bar doesn't flicker if you stop right at the threshold
+    const want = solid ? y > edge - 12 : y > edge;
+    if (want !== solid) { solid = want; nav.classList.toggle('solid', solid); }
+    const k = ease(hero.state.conv), bytes = FROM * Math.pow(TO / FROM, k);
+    put(num, 'num', fmt(bytes));
+    put(bar, 'bar', `scaleX(${Math.max(0.004, Math.log(bytes / TO) / Math.log(FROM / TO)).toFixed(3)})`);
+    put(pct, 'pct', k > 0.02 ? Math.max(1, Math.round(FROM / bytes)) + '× smaller' : '');
+    put(st, 'st', k > 0.98 ? 'Done · 4× smaller, every slide still sharp' : k > 0.02 ? 'Compressing…' : 'Scroll to compress');
+    hero.redraw();
+  }
+  addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+  addEventListener('resize', () => { heroH = heroEl.offsetHeight; edge = solidAt(); update(); });
+  update();
+
+  // letter dots: 50 letters, the misread ones in dawn
+  document.querySelectorAll('.dots b').forEach(b => {
+    const bad = +b.dataset.bad, marks = new Set([...Array(bad)].map((_, k) => Math.round((k + 0.5) * 50 / bad)));
+    for (let i = 0; i < 50; i++) { const d = document.createElement('i'); if (marks.has(i)) d.className = 'x'; b.appendChild(d); } });
+
+  // gentle entrances
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.rise').forEach(el => io.observe(el));
+
+  // before / after
+  const ba = document.getElementById('ba'), range = document.getElementById('baRange');
+  range.addEventListener('input', () => ba.style.setProperty('--split', range.value + '%'));
+  const views = { full: ['assets/lecture-original.jpg', 'assets/lecture-digby.jpg'], detail: ['assets/lecture-detail-original.png', 'assets/lecture-detail-digby.png'] };
+  document.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('[data-view]').forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+    const [bf, af] = views[b.dataset.view];
+    const ready = [bf, af].map(u => { const i = new Image(); i.src = u; return i.decode().catch(() => {}); });
+    Promise.all(ready).then(() => {
+      ba.querySelector('[data-before]').src = bf; ba.querySelector('[data-after]').src = af;
+      ba.classList.toggle('pixel', b.dataset.view === 'detail');
+    });
+  }));
+  if (!reduce) {     // a one-time hint that the divider moves
+    const once = new IntersectionObserver(es => { if (!es[0].isIntersecting) return; once.disconnect();
+      const s = performance.now();
+      (function hint(n) { const k = (n - s) / 1600; if (k > 1) { ba.style.setProperty('--split', '50%'); return; }
+        ba.style.setProperty('--split', (50 + Math.sin(k * Math.PI * 2) * 12) + '%'); requestAnimationFrame(hint); })(s);
+    }, { threshold: 0.6 });
+    once.observe(ba);
+  }
+
+  // studio illustration: flip between the original and option A, like the arrow keys do
+  const sImg = document.getElementById('studioImg'), tabs = [...document.querySelectorAll('#studioTabs span')];
+  let si = 0;
+  if (!reduce) setInterval(() => {
+    si = (si + 1) % 2;
+    document.getElementById('studioImg2').style.opacity = si ? 1 : 0;
+    tabs.forEach((t, i) => t.classList.toggle('on', i === si));
+  }, 2600);
+})();
+</script>
+</body>
+</html>

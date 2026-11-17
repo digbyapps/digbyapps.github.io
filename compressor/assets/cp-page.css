@@ -1,0 +1,315 @@
+/* Digby Video Compressor: everything below the hero.
+   The dawn carries on down the page. Dark chapters are "altitude": the deep blue above the clouds before sunrise, lit
+   from below by the hero's dawn. Light chapters are "haze": the pale, cool sky just after it. One accent, dawn peach,
+   marks every number and every icon's single highlighted stroke. The product is shown, never drawn: real 2x captures of
+   the app, set in the light like objects. Family rules shared with the Downloader page (dl-page.css): numbered
+   eyebrows, the window frame, one 24px / 1.5-stroke icon grammar, chapters alternating dark and light.
+   Everything is scoped to body.alt so the inline styles the hero uses are untouched. */
+
+body.alt {
+  --alt-0: #040A17; --alt-1: #07112A; --alt-2: #0E1F3D; --alt-line: rgba(191, 211, 234, .1);
+  --on-alt: #EEF2F8; --on-alt-2: rgba(222, 232, 246, .64);
+  --dawn: #F2C2A0; --dawn-hot: #FFD9BE; --dawn-ink: #B35E33; --skyblue: #8FB6E8; --skyblue-deep: #2F5E9E;
+  --haze: #F4F6FA; --haze-2: #EBEFF6; --haze-card: #FFFFFF; --on-haze: #0B1526; --on-haze-2: #53627A; --haze-line: rgba(14, 31, 61, .09);
+  --ease: cubic-bezier(.2, .8, .2, 1);
+}
+body.alt main { display: block; background: var(--haze); overflow-x: clip }
+
+/* ---------- chapters */
+body.alt .ch { position: relative; padding-block: clamp(100px, 12vw, 180px); isolation: isolate }
+body.alt .ch-alt { background: var(--alt-1); color: var(--on-alt);
+  --fg: var(--on-alt); --muted: var(--on-alt-2); --line: var(--alt-line); --card: rgba(255, 255, 255, .03); --accent: var(--skyblue) }
+body.alt .ch-alt::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(70% 46% at 50% 100%, rgba(242, 194, 160, .13), transparent 70%),
+              radial-gradient(60% 40% at 15% 0%, rgba(77, 125, 184, .16), transparent 70%),
+              linear-gradient(180deg, var(--alt-0), var(--alt-1) 40%, #0B1934) }
+body.alt .ch-haze { background: var(--haze); color: var(--on-haze);
+  --fg: var(--on-haze); --muted: var(--on-haze-2); --line: var(--haze-line); --card: var(--haze-card); --accent: var(--skyblue-deep); --good: #2F7D5B; --dawn-deep: var(--dawn-ink) }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) body.alt {
+  --haze: #0E1729; --haze-2: #111B30; --haze-card: #142039; --on-haze: #E6ECF5; --on-haze-2: #8F9DB3; --haze-line: rgba(191, 211, 234, .1); --dawn-ink: #F0B28C }
+  :root:not([data-theme="light"]) body.alt .ch-haze { --accent: var(--skyblue); --good: #6FC79E } }
+:root[data-theme="dark"] body.alt { --haze: #0E1729; --haze-2: #111B30; --haze-card: #142039; --on-haze: #E6ECF5; --on-haze-2: #8F9DB3; --haze-line: rgba(191, 211, 234, .1); --dawn-ink: #F0B28C }
+:root[data-theme="dark"] body.alt .ch-haze { --accent: var(--skyblue); --good: #6FC79E }
+
+body.alt .wrap { max-width: 1280px }
+body.alt .ch .eyebrow { color: var(--muted); gap: 12px }
+body.alt .ch .eyebrow i { width: 24px; height: 1px; background: var(--dawn-ink); opacity: 1 }
+body.alt .ch-alt .eyebrow i { background: var(--dawn) }
+body.alt .ch .eyebrow b { font-weight: 500; color: var(--dawn-ink); font-variant-numeric: tabular-nums; letter-spacing: .12em }
+body.alt .ch-alt .eyebrow b { color: var(--dawn) }
+body.alt .ch h2 { font-weight: 300; font-size: clamp(38px, 5.4vw, 76px); line-height: 1.02; letter-spacing: -.032em; margin-top: 22px; max-width: 13em }
+body.alt .ch .lead { color: var(--muted); font-size: clamp(17px, 1.45vw, 20px); line-height: 1.55; max-width: 36em }
+body.alt .ch-head.center { display: grid; justify-items: center; text-align: center }
+body.alt .ch-head.center .eyebrow { justify-content: center }
+body.alt .ch-head.center h2, body.alt .ch-head.center .lead { margin-inline: auto }
+body.alt .rise { transition-delay: calc(var(--d, 0) * 90ms) }
+
+/* icons: one family, 24px grid, 1.5 stroke, a single dawn stroke */
+.ic { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; overflow: visible; flex: none }
+.ic .a { stroke: var(--dawn) } .ic .af { fill: var(--dawn); stroke: none }
+.ch-haze .ic .a { stroke: var(--dawn-ink) } .ch-haze .ic .af { fill: var(--dawn-ink) }
+.glyph { display: grid; place-items: center; color: var(--on-alt); flex: none;
+  background: linear-gradient(180deg, #16294A, #0A152C); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .09), 0 0 0 1px rgba(143, 182, 232, .16), 0 10px 28px rgba(2, 8, 20, .45) }
+.glyph .ic .a { stroke: var(--dawn) } .glyph .ic .af { fill: var(--dawn) }
+
+/* ---------- the macOS window: real 2x captures of the app (native title bar included), lit from below */
+.shot { position: relative; margin: 0; container-type: inline-size }
+.shot img { width: 100%; height: auto; display: block; filter: drop-shadow(0 0 .5px rgba(0, 0, 0, .45)) drop-shadow(0 18px 30px rgba(2, 8, 22, .28)) drop-shadow(0 50px 70px rgba(2, 8, 22, .32)) }
+.shot picture { display: block }
+
+/* a piece of the app lifted out of its window */
+.ui-card { display: block; border-radius: 14px; overflow: hidden; margin: 0; background: #fff;
+  box-shadow: 0 0 0 .5px rgba(0, 0, 0, .28), 0 2px 6px rgba(0, 0, 0, .1), 0 22px 50px rgba(2, 8, 22, .22), 0 50px 100px rgba(2, 8, 22, .18) }
+.ui-card img { width: 100%; height: auto; display: block }
+
+/* chapter seams: a hairline of light where a dark chapter meets a light one (it carries the rhythm in dark mode) */
+body.alt .ch + .ch { box-shadow: inset 0 1px 0 var(--alt-line) }
+
+/* ---------- 01 Results (haze): the sky lands on the page */
+body.alt #results { padding-top: clamp(110px, 12vw, 170px);
+  background: linear-gradient(180deg, #F2C2A0 0, #F6DCCB 70px, #F5ECE8 170px, var(--haze) 440px) }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) body.alt #results {
+  background: linear-gradient(180deg, #F2C2A0 0, #8E6F72 60px, #2A2E45 170px, var(--haze) 420px) } }
+:root[data-theme="dark"] body.alt #results { background: linear-gradient(180deg, #F2C2A0 0, #8E6F72 60px, #2A2E45 170px, var(--haze) 420px) }
+
+.readout { margin-top: clamp(56px, 7vw, 96px); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line) }
+.readout .stat { background: none; padding: 34px clamp(20px, 2.6vw, 40px) 8px 0; min-width: 0; position: relative; display: flex; flex-direction: column }
+.readout .stat + .stat { padding-left: clamp(20px, 2.6vw, 40px); border-left: 1px solid var(--line) }
+.readout .stat::before { content: ""; position: absolute; top: -1px; left: 0; width: 44px; height: 2px; background: var(--dawn-ink) }
+.readout .stat + .stat::before { left: clamp(20px, 2.6vw, 40px) }
+.readout .k { font: 500 12px/1.3 var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--muted) }
+.readout .v { font: 200 clamp(40px, 3.7vw, 58px)/1 var(--display); letter-spacing: -.03em; margin-top: 22px; color: var(--fg); white-space: nowrap }
+.readout .v small { font-size: .42em; font-weight: 300; color: var(--muted); letter-spacing: 0; vertical-align: .5em; margin: 0 .32em }
+.readout p { color: var(--muted); font-size: 15.5px; line-height: 1.55; margin-top: 18px; max-width: 26em }
+.readout .bars { margin-top: auto; padding-top: 26px }
+.readout .bars i { height: 6px; border-radius: 3px; background: color-mix(in srgb, var(--muted) 22%, transparent) }
+.readout .bars i.b { background: linear-gradient(90deg, var(--skyblue-deep), var(--dawn-ink)) }
+.readout .dots { margin-top: auto; padding-top: 26px }
+.readout .tag { align-self: flex-start; margin-top: 18px; background: color-mix(in srgb, var(--dawn-ink) 11%, transparent); color: var(--dawn-ink) }
+
+/* the before/after: a specimen on a light table */
+body.alt .compare { margin-top: clamp(64px, 8vw, 110px); gap: 0 }
+.specimen { position: relative; padding: clamp(10px, 1.2vw, 16px); border-radius: 28px; background: var(--haze-card);
+  box-shadow: 0 0 0 1px var(--line), 0 30px 80px rgba(14, 31, 61, .12), 0 6px 18px rgba(14, 31, 61, .05) }
+body.alt .ba { border-radius: 18px; box-shadow: none; background: #F4F4F0 }
+body.alt .ba .lab { backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); background: rgba(6, 14, 30, .7); font-weight: 500; letter-spacing: .01em }
+body.alt .ba .lab.r { background: rgba(20, 30, 58, .78); box-shadow: inset 0 0 0 1px rgba(242, 194, 160, .45) }
+body.alt .ba-bar { padding: 22px 6px 6px; color: var(--muted) }
+body.alt .seg { background: var(--haze-2); border-color: var(--line) }
+body.alt .seg button[aria-pressed="true"] { background: var(--haze-card) }
+body.alt .facts b { color: var(--fg) }
+.hint { display: flex; align-items: center; gap: 8px; margin: 18px 0 0; justify-content: center; font-size: 13px; color: var(--muted) }
+.hint .ic { width: 18px; height: 18px }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .specimen { box-shadow: 0 0 0 1px var(--line), 0 40px 100px rgba(0, 0, 0, .45) } }
+:root[data-theme="dark"] .specimen { box-shadow: 0 0 0 1px var(--line), 0 40px 100px rgba(0, 0, 0, .45) }
+
+/* ---------- 02 How it works (altitude): the real window, lit by the dawn below it */
+body.alt #how { overflow: clip }
+.stage-app { position: relative; margin: clamp(56px, 7vw, 96px) auto 0; max-width: 1180px }
+.stage-app::after { content: ""; position: absolute; left: 4%; right: 4%; bottom: -10%; height: 26%; z-index: -1; filter: blur(34px); pointer-events: none;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(242, 194, 160, .34), rgba(143, 182, 232, .1) 60%, transparent 76%) }
+.stage-app .result { position: absolute; right: -5%; bottom: -12%; width: 50%; z-index: 2; border-radius: 16px; overflow: hidden;
+  box-shadow: 0 0 0 .5px rgba(0, 0, 0, .4), 0 0 0 1px rgba(242, 194, 160, .35), 0 24px 60px rgba(2, 8, 22, .5), 0 0 80px rgba(242, 194, 160, .14) }
+.stage-app .result img { width: 100%; height: auto; display: block }
+.stage-app figcaption { margin-top: clamp(90px, 10vw, 150px); padding-right: 40%; text-align: left; text-align: center; color: var(--on-alt-2); font-size: 14px }
+.stage-app figcaption b { color: var(--dawn); font-weight: 500 }
+@supports (animation-timeline: view()) { @media (prefers-reduced-motion: no-preference) {
+  .stage-app .shot { animation: cp-tilt linear both; animation-timeline: view(); animation-range: entry 0% cover 30% }
+  .stage-app .result { animation: cp-lift linear both; animation-timeline: view(); animation-range: entry 10% cover 40% }
+  @keyframes cp-tilt { from { transform: perspective(1800px) rotateX(12deg) translateY(40px) scale(.95); opacity: .7 } to { transform: none; opacity: 1 } }
+  @keyframes cp-lift { from { transform: translateY(60px); opacity: 0 } to { transform: none; opacity: 1 } }
+} }
+
+/* five steps on one thread that converges on the dawn point, like the hero's streaks */
+body.alt .steps { list-style: none; padding: 0; margin: clamp(90px, 10vw, 150px) 0 0; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 40px 28px }
+body.alt .thread { top: 0; height: 56px; left: 28px; right: calc((100% - 112px) / 5 - 28px); width: auto }
+body.alt .thread path { stroke: url(#cp-thread); opacity: 1; stroke-width: 1.2 }
+body.alt .step .glyph { width: 56px; height: 56px; border-radius: 16px; position: relative; z-index: 1 }
+body.alt .step:last-child .glyph { background: radial-gradient(circle at 50% 50%, rgba(255, 217, 190, .35), transparent 60%), linear-gradient(180deg, #1C2C4C, #0C1730);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12), 0 0 0 1px rgba(242, 194, 160, .45), 0 0 36px rgba(242, 194, 160, .25), 0 10px 28px rgba(2, 8, 20, .45) }
+body.alt .step .n { font: 500 12px/1 var(--body); letter-spacing: .14em; color: var(--dawn); margin-top: 26px }
+body.alt .step h3 { margin-top: 12px; font-size: 21px; font-weight: 500; color: var(--on-alt) }
+body.alt .step p { margin-top: 10px; color: var(--on-alt-2); font-size: 15.5px; line-height: 1.55 }
+
+/* ---------- 03 Features (haze): a bento of real screens */
+.bento { margin-top: clamp(48px, 6vw, 80px); display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 18px }
+.tile { position: relative; background: var(--haze-card); border-radius: 26px; padding: clamp(24px, 2.6vw, 34px); overflow: hidden; min-width: 0;
+  box-shadow: 0 0 0 1px var(--line), 0 1px 2px rgba(14, 31, 61, .04); display: flex; flex-direction: column; gap: 10px;
+  transition: transform .45s var(--ease), box-shadow .45s var(--ease) }
+@media (hover: hover) { .tile:hover { transform: translateY(-3px); box-shadow: 0 0 0 1px var(--line), 0 24px 60px rgba(14, 31, 61, .1) } }
+.tile h3 { font-size: 21px; font-weight: 500; letter-spacing: -.012em; color: var(--fg) }
+.tile p { color: var(--muted); font-size: 15.5px; line-height: 1.55; max-width: 34em }
+.tile .fine { font-size: 13.5px; border-top: 1px solid var(--line); padding-top: 12px; margin-top: 6px }
+.tile .fine b { color: var(--fg); font-weight: 600 }
+.tile .glyph { width: 44px; height: 44px; border-radius: 13px; margin-bottom: 14px }
+.tile .glyph .ic { width: 22px; height: 22px }
+.t-3 { grid-column: span 3 } .t-2 { grid-column: span 2 } .t-4 { grid-column: span 4 } .t-6 { grid-column: span 6 }
+/* screen crops: the app, at its real size, sliding out of the tile's corner */
+.tile .screen { margin: 24px calc(-1 * clamp(24px, 2.6vw, 34px)) calc(-1 * clamp(24px, 2.6vw, 34px)); padding: 0 0 0 clamp(24px, 2.6vw, 34px);
+  flex: 1; display: flex; align-items: flex-start; overflow: hidden; max-height: clamp(220px, 24vw, 340px);
+  -webkit-mask-image: linear-gradient(180deg, #000 80%, transparent); mask-image: linear-gradient(180deg, #000 80%, transparent) }
+.tile .screen img { flex: none; width: max(100%, var(--min, 520px)); max-width: none; height: auto; border-radius: 12px 0 0 0; background: #fff;
+  box-shadow: 0 0 0 .5px rgba(14, 31, 61, .22), 0 20px 50px rgba(14, 31, 61, .14) }
+.tile .screen.center { justify-content: center; padding: 0 clamp(24px, 2.6vw, 34px); align-items: flex-end; -webkit-mask-image: none; mask-image: none; flex: 1 }
+.tile .screen.center img { width: 100%; border-radius: 12px }
+.tile.wide { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: 0 40px; align-items: center; padding-right: 0; padding-bottom: 0 }
+.tile.wide .copy { padding-bottom: clamp(24px, 2.6vw, 34px); display: flex; flex-direction: column; gap: 10px }
+.tile.wide .screen { margin: clamp(24px, 2.6vw, 34px) 0 0; padding: 0; align-self: end; max-height: none; -webkit-mask-image: none; mask-image: none }
+.tile.wide .screen img { width: max(100%, 640px); border-radius: 14px 0 0 0 }
+.tile.dark { background: radial-gradient(90% 70% at 100% 100%, rgba(242, 194, 160, .16), transparent 60%), linear-gradient(160deg, #13254A, #070F22);
+  --fg: var(--on-alt); --muted: var(--on-alt-2); --line: var(--alt-line); box-shadow: none; color: var(--on-alt) }
+.tile.dark .glyph { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12), 0 0 0 1px rgba(242, 194, 160, .3) }
+.tile .seal { margin-top: auto; padding-top: 26px; display: flex; flex-wrap: wrap; gap: 8px }
+.tile .seal span { font-size: 12.5px; padding: 6px 11px; border-radius: 99px; background: rgba(255, 255, 255, .06); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .12); color: var(--on-alt-2) }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tile .screen img { box-shadow: 0 0 0 1px rgba(191, 211, 234, .14), 0 20px 50px rgba(0, 0, 0, .4) } }
+:root[data-theme="dark"] .tile .screen img { box-shadow: 0 0 0 1px rgba(191, 211, 234, .14), 0 20px 50px rgba(0, 0, 0, .4) }
+
+/* ---------- 04 Preview Studio (altitude): the real studio, with the flip at actual pixels in front */
+body.alt #studio .studio { display: grid; grid-template-columns: minmax(0, 4.4fr) minmax(0, 7.6fr); gap: clamp(40px, 5vw, 80px); align-items: center; margin: 0 auto }
+body.alt #studio h2 { font-size: clamp(36px, 4.4vw, 60px); max-width: 9em }
+body.alt .bullets { margin-top: 34px; gap: 0; border-top: 1px solid var(--alt-line) }
+body.alt .bullets > div { grid-template-columns: 40px 1fr; gap: 16px; padding: 18px 0; border-bottom: 1px solid var(--alt-line); color: var(--on-alt-2); font-size: 15.5px; line-height: 1.55 }
+body.alt .bullets .glyph { width: 40px; height: 40px; border-radius: 12px }
+body.alt .bullets .glyph .ic { width: 20px; height: 20px; color: var(--on-alt); margin: 0 }
+body.alt .bullets b { color: var(--on-alt) }
+.studio-stage { position: relative; padding-bottom: 18% }
+.studio-stage .back { width: 100%; opacity: .96 }
+.studio-stage::after { content: ""; position: absolute; left: 10%; right: 0; bottom: 0; height: 30%; z-index: -1; filter: blur(40px); pointer-events: none;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(242, 194, 160, .26), transparent 75%) }
+/* the flip: the site's own before/after frames in a small window, switching like the arrow keys do */
+body.alt .window { position: absolute; right: -2%; bottom: 0; width: 64%; border-radius: 14px; background: #fff; color: #1d1d1f; font: 13px/1.4 -apple-system, BlinkMacSystemFont, var(--body);
+  box-shadow: 0 0 0 .5px rgba(0, 0, 0, .5), 0 0 0 1px rgba(242, 194, 160, .3), 0 30px 80px rgba(2, 8, 22, .55), 0 0 90px rgba(242, 194, 160, .12) }
+body.alt .window .bar { height: 34px; background: #F3F3F5; border-bottom: 1px solid rgba(0, 0, 0, .08); gap: 7px; padding: 0 12px }
+body.alt .window .bar i { width: 11px; height: 11px; box-shadow: inset 0 0 0 .5px rgba(0, 0, 0, .18) }
+body.alt .window .bar span { margin: 0 0 0 10px; font-size: 12.5px; color: #3a3a3c; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+body.alt .window .bar em { margin-left: auto; font: 500 10.5px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; color: #8a5634; font-style: normal; white-space: nowrap }
+body.alt .window .stage { aspect-ratio: 16 / 8.4 }
+body.alt .window .tabs { top: 10px; left: 10px; background: rgba(20, 20, 24, .72); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px) }
+body.alt .window .opts { background: #F6F6F8; border-top: 1px solid rgba(0, 0, 0, .06); gap: 8px; padding: 10px }
+body.alt .opt { background: #fff; border: 1px solid rgba(0, 0, 0, .1); border-radius: 10px; color: #1d1d1f }
+body.alt .opt.on { border-color: #3A6AAE; box-shadow: 0 0 0 1px #3A6AAE }
+body.alt .opt .h b { background: #3A6AAE; color: #fff }
+body.alt .opt dt { color: #86868b } body.alt .opt dd.good { color: #2F7D5B } body.alt .opt dd.warn { color: #B35E33 }
+
+/* ---------- 05 Formats (haze) */
+body.alt .tablewrap { margin-top: clamp(48px, 6vw, 72px); border-radius: 24px; border: 0; background: var(--haze-card); box-shadow: 0 0 0 1px var(--line), 0 24px 60px rgba(14, 31, 61, .06) }
+body.alt table { font-size: 15.5px }
+body.alt th, body.alt td { padding: 22px 26px; border-bottom-color: var(--line) }
+body.alt th { font-size: 11.5px; letter-spacing: .14em; color: var(--muted); padding-block: 20px; background: color-mix(in srgb, var(--haze-2) 60%, transparent) }
+body.alt td b { font: 500 21px/1.1 var(--display); letter-spacing: -.01em; color: var(--fg) }
+body.alt td .sub { font-size: 13.5px }
+body.alt td.n { font-family: var(--display); font-size: 17px; font-weight: 400 }
+body.alt tbody tr:first-child { background: linear-gradient(90deg, color-mix(in srgb, var(--dawn-ink) 8%, transparent), transparent 70%) }
+body.alt tbody tr:first-child td:first-child { box-shadow: inset 3px 0 0 var(--dawn-ink) }
+body.alt .pill.y { background: color-mix(in srgb, var(--good) 12%, transparent) } body.alt .pill.n { background: color-mix(in srgb, var(--dawn-ink) 12%, transparent); color: var(--dawn-ink) }
+body.alt .src { margin-top: 22px; max-width: 64em; line-height: 1.6 }
+/* phones and narrow tablets: each format becomes a card, no sideways scrolling */
+@media (max-width: 860px) {
+  body.alt .tablewrap { background: none; box-shadow: none; border-radius: 0; overflow: visible }
+  body.alt table, body.alt tbody, body.alt tr, body.alt td { display: block; min-width: 0; width: auto }
+  body.alt thead { display: none }
+  body.alt tbody { display: grid; gap: 14px }
+  body.alt tr { background: var(--haze-card); border-radius: 22px; padding: 22px 22px 14px; box-shadow: 0 0 0 1px var(--line) }
+  body.alt tbody tr:first-child { box-shadow: 0 0 0 1px var(--line), inset 3px 0 0 var(--dawn-ink) }
+  body.alt tbody tr:first-child td:first-child { box-shadow: none }
+  body.alt td { padding: 10px 0; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 16px; align-items: baseline }
+  body.alt td:first-child { display: block; padding: 0 0 14px }
+  body.alt td:last-child { border-bottom: 0 }
+  body.alt td[data-label]::before { content: attr(data-label); font-size: 13px; color: var(--muted) }
+  body.alt td:nth-child(2) { display: block } body.alt td:nth-child(2)::before { display: block; margin-bottom: 2px }
+  body.alt td.n { text-align: right; white-space: normal }
+}
+
+/* ---------- Download (the sky again): install steps in the family style */
+body.alt .dl .eyebrow i { background: var(--dawn) }
+body.alt .first { list-style: none; padding: 0; margin: clamp(64px, 8vw, 100px) auto 0; max-width: 1000px; gap: 16px }
+body.alt .first li { padding: 26px 26px 28px; border-radius: 22px; background: rgba(10, 24, 50, .55); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); font-size: 15px; line-height: 1.55; color: rgba(255, 255, 255, .86); text-align: left }
+body.alt .first b { display: block; font: 500 12px/1 var(--body); letter-spacing: .14em; color: var(--dawn); margin-bottom: 14px }
+body.alt .dl .btn { white-space: nowrap }
+@media (max-width: 760px) { body.alt .first { grid-template-columns: 1fr } }
+@media (max-width: 430px) { body.alt .dl .btn-light { padding: 16px 20px; font-size: 14.5px; gap: 8px } body.alt .dl .ctas { flex-direction: column; align-items: center } }
+
+/* ---------- 06 FAQ (haze) */
+body.alt #faq .faq { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: clamp(40px, 6vw, 100px) }
+body.alt #faq .faq > div:first-child { position: sticky; top: 110px }
+body.alt #faq .qs { border-top: 1px solid var(--line) }
+body.alt details { border-bottom-color: var(--line) }
+body.alt summary { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; padding: 26px 0; font: 400 clamp(18px, 1.6vw, 21px)/1.35 var(--display); letter-spacing: -.01em }
+body.alt summary::after { content: ""; position: static; flex: none; width: 28px; height: 28px; border: 0; border-radius: 50%; margin-top: -2px; transform: none;
+  background: linear-gradient(currentColor, currentColor) 50% / 11px 1.5px no-repeat, linear-gradient(currentColor, currentColor) 50% / 1.5px 11px no-repeat;
+  box-shadow: inset 0 0 0 1px var(--line); color: var(--muted); transition: transform .3s var(--ease), color .3s }
+body.alt details[open] summary::after { transform: rotate(45deg); color: var(--dawn-ink) }
+body.alt details p { font-size: 16px; line-height: 1.6; margin-top: -8px }
+@media (max-width: 960px) { body.alt #faq .faq { grid-template-columns: 1fr; gap: 28px } body.alt #faq .faq > div:first-child { position: static } }
+
+/* ---------- footer (altitude) */
+body.alt footer { background: var(--alt-0); color: var(--on-alt-2); border-top: 1px solid var(--alt-line) }
+body.alt footer .brand { color: var(--on-alt) }
+body.alt footer .mark { font: 800 19px/1 "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif; letter-spacing: -.05em; color: var(--on-alt) }
+body.alt footer a:hover { color: var(--on-alt) }
+
+/* ---------- responsive */
+@media (max-width: 1100px) {
+  body.alt #studio .studio { grid-template-columns: 1fr }
+  .studio-stage { margin-top: 20px }
+}
+@media (max-width: 1000px) {
+  .readout { grid-template-columns: 1fr }
+  .readout .stat, .readout .stat + .stat { padding: 30px 0 30px; border-left: 0; border-bottom: 1px solid var(--line) }
+  .readout .stat + .stat::before { left: 0 }
+  .readout .stat::before { top: -1px }
+  .readout .v { font-size: clamp(44px, 9vw, 64px) }
+  body.alt .steps { grid-template-columns: 1fr 1fr; gap: 48px 32px }
+  .t-3, .t-2, .t-4 { grid-column: span 3 } .t-2.dark { grid-column: span 6 }
+  .tile.wide { grid-template-columns: 1fr } .tile.wide .copy { padding-right: clamp(24px, 2.6vw, 34px) } .tile.wide .screen { padding-left: clamp(24px, 2.6vw, 34px) }
+}
+@media (max-width: 700px) {
+  /* phones: the window is too small to read whole, so it is shown larger and bleeds off the right edge */
+  .stage-app .shot { width: 175%; max-width: none }
+  .stage-app { overflow: visible }
+  .stage-app .result { right: auto; left: 2%; bottom: -14%; width: 52% }
+  .stage-app figcaption { padding-right: 0; margin-top: 90px }
+  .stage-app figcaption { margin-top: 30px; font-size: 13.5px }
+  .studio-stage { padding-bottom: 0 }
+  .studio-stage .back { width: 170%; max-width: none }
+  body.alt .window { position: relative; right: auto; width: 100%; margin-top: -22% }
+  body.alt .window .opts { grid-template-columns: 1fr 1fr 1fr; gap: 6px; padding: 8px }
+  body.alt .opt { padding: 8px }
+  body.alt .opt dl { grid-template-columns: 1fr; gap: 0 } body.alt .opt dd { text-align: left; margin-bottom: 4px } body.alt .opt dt { font-size: 10.5px }
+  body.alt .window .bar em { display: none }
+  .bento { grid-template-columns: 1fr } .t-3, .t-2, .t-4, .t-6, .t-2.dark { grid-column: auto }
+}
+@media (max-width: 520px) {
+  body.alt .steps { grid-template-columns: 1fr; gap: 34px }
+  body.alt .step { display: grid; grid-template-columns: 56px 1fr; column-gap: 18px }
+  body.alt .step .glyph { grid-row: span 3 }
+  body.alt .step .n { margin-top: 2px } body.alt .step h3 { margin-top: 8px } body.alt .step p { margin-top: 6px }
+  body.alt .window .tabs span { padding: 4px 7px; font-size: 10.5px }
+  body.alt .ba-bar { justify-content: center }
+  body.alt .facts { justify-content: center; font-size: 13.5px }
+}
+@media (prefers-reduced-motion: reduce) { .tile, .tile:hover { transition: none; transform: none } }
+.stage-app .result img { filter: none }
+.readout .dots { max-width: 440px }
+@media (max-width: 1100px) { .stage-app .result { right: 0 } }
+@media (max-width: 700px) { .stage-app .result { right: auto } .stage-app figcaption { margin-top: 32vw } }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .ch-alt .shot img { filter: drop-shadow(0 0 .6px rgba(222, 232, 246, .5)) drop-shadow(0 30px 60px rgba(0, 0, 0, .55)) drop-shadow(0 0 90px rgba(143, 182, 232, .08)) } }
+:root[data-theme="dark"] .ch-alt .shot img { filter: drop-shadow(0 0 .6px rgba(222, 232, 246, .5)) drop-shadow(0 30px 60px rgba(0, 0, 0, .55)) drop-shadow(0 0 90px rgba(143, 182, 232, .08)) }
+
+/* ---------- a breath between 03 and 04: the cloud sea from the hero, seen from above, as the page drops into altitude */
+body.alt .breath { position: relative; height: clamp(240px, 36vw, 560px); overflow: hidden; background: var(--alt-0) }
+body.alt .breath img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 60% 78% }
+body.alt .breath::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, var(--haze) 0%, rgba(244, 246, 250, 0) 22%, rgba(4, 10, 23, 0) 60%, var(--alt-0) 100%) }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) body.alt .breath::after {
+  background: linear-gradient(180deg, var(--haze) 0%, rgba(14, 23, 41, 0) 26%, rgba(4, 10, 23, 0) 60%, var(--alt-0) 100%) } }
+:root[data-theme="dark"] body.alt .breath::after {
+  background: linear-gradient(180deg, var(--haze) 0%, rgba(14, 23, 41, 0) 26%, rgba(4, 10, 23, 0) 60%, var(--alt-0) 100%) }
+@supports (animation-timeline: view()) { @media (prefers-reduced-motion: no-preference) {
+  body.alt .breath img { animation: breath-drift linear both; animation-timeline: view() }
+  @keyframes breath-drift { from { transform: scale(1.1) translateY(-3%) } to { transform: scale(1.02) translateY(3%) } } } }
+
+/* the progress card hangs below the window: leave it room before the steps (it used to be a caption's job) */
+.stage-app { margin-bottom: clamp(40px, 6vw, 80px) }
+@media (max-width: 700px) { .stage-app { margin-bottom: 18vw } }
