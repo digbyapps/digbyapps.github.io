@@ -85,7 +85,7 @@ nav .brand.digby-lockup { display: inline-flex; align-items: baseline; flex: non
    The panel is positioned against the fixed nav, so it sits at the page edge on every width. */
 nav .brandset { display: flex; align-items: center; gap: 6px; min-width: 0 }
 nav details.sw { position: static; border: 0; flex: none }
-nav details.sw > summary.sw-b { list-style: none; display: grid; place-items: center; width: 28px; height: 28px; padding: 0; margin: 0; border-radius: 8px; cursor: pointer;
+nav details.sw > summary.sw-b { list-style: none; display: grid; place-items: center; justify-content: center; align-content: center; gap: 0; letter-spacing: normal; width: 28px; height: 28px; padding: 0; margin: 0; border-radius: 8px; cursor: pointer;
   font: inherit; color: rgba(255, 255, 255, .72); transform: translateY(1px); transition: background .2s, color .2s }
 nav details.sw > summary.sw-b::-webkit-details-marker { display: none }
 nav details.sw > summary.sw-b::after { content: none; display: none }
@@ -143,17 +143,10 @@ nav .links a:hover { color: #fff }
 .sky::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background: radial-gradient(120% 70% at 80% 100%, rgba(242,194,160,.28), transparent 60%), radial-gradient(80% 50% at 10% 0%, rgba(255,255,255,.06), transparent 70%) }
 .hero { min-height: max(660px, 94svh) }
-/* the hero: the icon's chevrons pressing onto the dawn line (assets/horizon.svg) */
 .hero .art { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none }
-.hero .art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%;
-  transform-origin: 100% 78%; transform: scale(calc(1.02 + var(--conv, 0) * .06)) }
-.hero .art img { animation: alt-in 2.6s cubic-bezier(.2,.7,.2,1) both }
-@keyframes alt-in { from { opacity: 0; transform: scale(1.08) } }
 .hero .art::after { content: ""; position: absolute; inset: 0;
   background: linear-gradient(180deg, rgba(10,24,48,.45) 0%, rgba(10,24,48,0) 20%),
               radial-gradient(75% 70% at 0% 100%, rgba(10,24,48,.55), rgba(10,24,48,0) 70%) }
-@media (max-width: 760px) { .hero .art img { object-position: 78% 50% } }
-@media (prefers-reduced-motion: reduce) { .hero .art img { animation: none; transform: none } }
 .hero-inner { position: relative; min-height: inherit; display: grid; align-content: end; padding-block: 150px 9vh }
 h1 { font-weight: 200; font-size: clamp(54px, 9.4vw, 136px); line-height: .94; letter-spacing: -.036em; margin-top: 22px }
 h1 span { display: block }
@@ -279,9 +272,7 @@ td.n { font-variant-numeric: tabular-nums; white-space: nowrap }
 
 /* download */
 .dl { padding-block: clamp(110px, 14vw, 180px); text-align: center }
-/* the closing panel: the dawn line on its own (assets/horizon-plain.svg) */
 .dl .art { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none }
-.dl .art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 78% 72% }
 .dl .art::after { content: ""; position: absolute; inset: 0;
   background: radial-gradient(60% 50% at 50% 32%, rgba(10,24,48,.38), rgba(10,24,48,0) 75%),
               linear-gradient(180deg, rgba(10,24,48,.5) 0%, rgba(10,24,48,.12) 40%, rgba(10,24,48,0) 70%, rgba(10,24,48,.35) 100%) }
@@ -371,7 +362,7 @@ footer .theme:focus-visible { outline: 2px solid #F2C2A0; outline-offset: 2px }
 </nav>
 
 <header class="sky hero" id="top">
-  <div class="art" aria-hidden="true"><img src="assets/horizon.svg" alt="" decoding="async"></div>
+  <div class="art" aria-hidden="true"></div>
   <div class="wrap hero-inner">
     <div class="eyebrow reveal d1">Video compressor for macOS · Free</div>
     <h1><span class="reveal d2">Less weight.</span><span class="second reveal d3">Same picture.</span></h1>
@@ -528,7 +519,6 @@ footer .theme:focus-visible { outline: 2px solid #F2C2A0; outline-offset: 2px }
   </div>
 </section>
 
-<div class="breath" aria-hidden="true"><img src="assets/horizon-plain.svg" alt="" loading="lazy" decoding="async"></div>
 
 <section class="ch ch-alt" id="studio">
   <div class="wrap studio">
@@ -586,7 +576,7 @@ footer .theme:focus-visible { outline: 2px solid #F2C2A0; outline-offset: 2px }
 </section>
 
 <section class="sky dl" id="download">
-  <div class="art" aria-hidden="true"><img src="assets/horizon-plain.svg" alt="" loading="lazy" decoding="async"></div>
+  <div class="art" aria-hidden="true"></div>
   <div class="wrap">
     <div class="eyebrow rise" style="justify-content:center">Free for macOS</div>
     <h2 class="rise">Make room. Keep the picture.</h2>
@@ -749,68 +739,18 @@ const DIGBY = { repo: "digbyapps/digby-video-compressor", version: "1.2.0" };
   }, 2600);
 })();
 </script>
-<style>/* background-variant mockup layer: only backgrounds of the target panels change */
-body:not(.bgv-0) .bgt > img, body:not(.bgv-0) .bgt > picture, body:not(.bgv-0) .bgt > video { opacity: 0 !important }
-body:not(.bgv-0) .bgt { background: linear-gradient(180deg, var(--g1) 0%, var(--g2) 22%, var(--g3) 48%, var(--g4) 70%, var(--g5) 86%, var(--w1) 96%, var(--w1) 100%);
-  background-size: 100% 170%; background-position: 0 0 }
-.bgt > i.bgv-l { position: absolute; pointer-events: none; display: none; z-index: 0; border-radius: 50% }
-.bgt > i.glow { width: 90%; height: 70%; left: 35%; bottom: -35%; background: radial-gradient(closest-side, var(--w1), transparent); opacity: .45 }
-.bgt > i.light { width: 40%; height: 160%; top: -30%; left: -50%; background: radial-gradient(closest-side, rgba(255,255,255,.22), transparent) }
-body:not(.bgv-0):not(.bgv-1):not(.bgv-2) .bgt > i.bgv-l { display: block }
-.bgv-2 .bgt { animation: bgv-rise 16s ease-in-out infinite alternate }
-@keyframes bgv-rise { from { background-position: 0 0 } to { background-position: 0 70% } }
-.bgv-3 .bgt > i.glow { opacity: .7; animation: bgv-drift 14s ease-in-out infinite alternate } .bgv-3 .bgt > i.light { display: none !important }
-@keyframes bgv-drift { from { transform: translateX(15%) } to { transform: translateX(-90%) } }
-.bgv-4 .bgt > i.light { animation: bgv-pass 12s linear infinite } .bgv-4 .bgt > i.glow { opacity: .3 }
-@keyframes bgv-pass { from { transform: translateX(0) } to { transform: translateX(400%) } }
-.bgv-5 .bgt > i.glow { animation: bgv-pulse 7s ease-in-out infinite alternate } .bgv-5 .bgt > i.light { display: none !important }
-@keyframes bgv-pulse { from { opacity: 0; transform: scale(.8) } to { opacity: .95; transform: scale(1.1) } }
-.bgv-6 .bgt { animation: bgv-rise 22s ease-in-out infinite alternate }
-.bgv-6 .bgt > i.glow { animation: bgv-drift 17s ease-in-out infinite alternate, bgv-pulse 9s ease-in-out infinite alternate } .bgv-6 .bgt > i.light { animation: bgv-pass 20s linear infinite }
-@media (prefers-reduced-motion: reduce) { .bgt, .bgt > i { animation: none !important } }
-/* Downloader without the reel image: hero laid out like the Compressor's at every width */
-body:not(.bgv-0) .reel-hero .art { inset: 0; width: 100%; height: auto; -webkit-mask-image: none; mask-image: none }
-body:not(.bgv-0) .reel-hero::after { display: none }
-#download.bgt > :not(i) { position: relative; z-index: 1 }
-@media (max-width: 760px), (max-aspect-ratio: 1/1) {
-  body:not(.bgv-0) .reel-hero { min-height: 0 }
-  body:not(.bgv-0) .reel-hero .hero-inner { min-height: 0; align-content: start; padding-block: clamp(120px, 18svh, 170px) 72px }
-}
-
-/* the gap between 03 Features and 04 Preview Studio */
-.breath > img { display: none }
-.opt-1 .breath { display: none }
-.opt-2 .breath { height: clamp(90px, 10vw, 140px); background: linear-gradient(180deg, var(--haze), var(--alt-0)) }
-.opt-2 .breath::after, .opt-3 .breath::after, .opt-4 .breath::after { display: none }
-.opt-3 .breath { height: clamp(120px, 14vw, 200px); background: linear-gradient(180deg, var(--haze) 0%, #0E1F3D 55%, var(--alt-0) 100%) }
-.opt-3 .breath::before { content: ""; position: absolute; left: 50%; top: 55%; width: min(560px, 70vw); height: 2px; transform: translateX(-50%); border-radius: 2px;
-  background: linear-gradient(90deg, transparent, #F2C2A0, #FFE7D4, #F2C2A0, transparent); box-shadow: 0 0 24px 6px rgba(242,194,160,.45) }
-.opt-4 .breath { height: clamp(140px, 16vw, 240px);
-  background: linear-gradient(180deg, transparent 0%, transparent 60%, var(--alt-0) 100%), linear-gradient(0deg, var(--g1) 0%, var(--g2) 22%, var(--g3) 48%, var(--g4) 70%, var(--g5) 86%, var(--w1) 100%);
-  background-size: 100% 100%, 100% 170%; animation: bgv-rise2 16s ease-in-out infinite alternate }
-@keyframes bgv-rise2 { from { background-position: 0 0, 0 0 } to { background-position: 0 0, 0 100% } }
-
-#bgv-bar { display: none !important }
-#bgv-bar { position: fixed; z-index: 9999; left: 50%; bottom: 16px; transform: translateX(-50%); display: flex; flex-wrap: wrap; justify-content: center; gap: 6px;
-  max-width: calc(100% - 32px); padding: 8px; border-radius: 14px; background: rgba(10,14,22,.78); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
-  font: 600 12px/1 -apple-system, sans-serif }
-#bgv-bar button { font: inherit; color: #fff; background: none; border: 1px solid rgba(255,255,255,.2); border-radius: 9px; padding: 8px 10px; cursor: pointer }
-#bgv-bar button.on { background: #fff; color: #111 }
+<style>/* hero and download panel: the family hero's diagonal pan (115deg, ten stops, 300%, 30s), drifting only a fifth of the way so it stays on its opening colours, in the Compressor's
+   altitude blues with warm copper; the hero settles into the solid navy black that opens Results */
+.hero .art, .dl .art {
+  background: radial-gradient(60% 70% at 18% 30%, rgba(255,255,255,.10), transparent 70%),
+    linear-gradient(115deg, #07112A, #12285A, #264E8C, #4F79B0, #9C6A48, #C98E62, #1A3568, #07112A, #12285A, #264E8C);
+  background-size: 100% 100%, 300% 300%; animation: c-pan 30s ease-in-out infinite alternate }
+@keyframes c-pan { from { background-position: 0 0, 0% 0% } to { background-position: 0 0, 22% 22% } }
+.hero .art::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, transparent 62%, #040A17 100%) }
+@media (prefers-reduced-motion: reduce) { .hero .art, .dl .art { animation: none } }
+body.alt #results { background: #040A17 !important; --haze: #040A17; --haze-2: #111B30; --haze-card: #142039; --on-haze: #E6ECF5; --on-haze-2: #8F9DB3;
+  --haze-line: rgba(191, 211, 234, .1); --dawn-ink: #F0B28C; --accent: var(--skyblue); --good: #6FC79E }
 </style>
-<script>window.BGV={label:"Gap above 04:",jump:".breath",names:["No band","Soft fade","Dawn line","Sky strip"],targets:[".hero .art","#download .art"],vars:{g1:"#081430",g2:"#14294D",g3:"#2E5590",g4:"#6F98C8",g5:"#C9D9EC",w1:"#F2C2A0",w2:"#E7B898"}};</script>
-<script>(function(){
-  var cfg = window.BGV, names = cfg.names;
-  cfg.targets.forEach(function(s){ document.querySelectorAll(s).forEach(function(e){ e.classList.add("bgt"); if (getComputedStyle(e).position=="static") e.style.position="relative"; e.style.overflow="hidden" }) });
-  Object.keys(cfg.vars).forEach(function(k){ document.documentElement.style.setProperty("--"+k, cfg.vars[k]) });
-  document.body.classList.add("bgv-2");
-  var bar = document.createElement("div"); bar.id = "bgv-bar"; document.body.appendChild(bar);
-  var lab = document.createElement("span"); lab.textContent = cfg.label; lab.style.cssText = "color:#fff;opacity:.6;align-self:center;padding:0 6px"; bar.appendChild(lab);
-  function set(i, jump){ document.body.className = document.body.className.replace(/\bopt-\d\b/g,"").trim() + " opt-" + i;
-    [].forEach.call(bar.querySelectorAll("button"), function(b, j){ b.className = j == i - 1 ? "on" : "" }); history.replaceState(null, "", "#o" + i);
-    if (jump && cfg.jump) { var t = document.querySelector(cfg.jump); t && t.scrollIntoView({block: "center"}) } }
-  names.forEach(function(n, i){ var b = document.createElement("button"); b.textContent = (i + 1) + " · " + n; b.onclick = function(){ set(i + 1, true) }; bar.appendChild(b) });
-  set(+(location.hash.match(/#o(\d)/) || [0,1])[1]);
-})();</script>
 <script>/* app switcher: close on outside click or Escape */
 (function(){var d=document.querySelector("details.sw");if(!d)return;
 document.addEventListener("click",function(e){if(d.open&&!d.contains(e.target))d.open=false});

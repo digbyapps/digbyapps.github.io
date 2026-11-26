@@ -164,15 +164,6 @@ body.reel .rise { transition-delay: calc(var(--d, 0) * 90ms) }
   :root[data-theme="dark"] #choose .pill[aria-pressed="true"] { background: var(--teal); color: #06181A; box-shadow: 0 6px 18px rgba(111, 183, 188, .2) }
   :root[data-theme="dark"] #choose .chip, :root[data-theme="dark"] #choose .blocked .alts button { background: rgba(111, 183, 188, .14); color: var(--teal) }
 
-/* ---------- a breath: the coil's rings, close up */
-.rings { position: relative; height: clamp(220px, 34vw, 520px); overflow: hidden; background: var(--ink) }
-.rings img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 40% }
-.rings::after { content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(180deg, var(--ink) 0%, rgba(5, 12, 14, 0) 26%, rgba(5, 12, 14, 0) 62%, var(--ink) 100%),
-              linear-gradient(90deg, rgba(5, 12, 14, .5), transparent 30%, transparent 70%, rgba(5, 12, 14, .5)) }
-@supports (animation-timeline: view()) { @media (prefers-reduced-motion: no-preference) {
-  .rings img { animation: drift linear both; animation-timeline: view() }
-  @keyframes drift { from { transform: scale(1.12) translateY(-3%) } to { transform: scale(1.02) translateY(3%) } } } }
 
 /* ---------- 03 Honest (ink): copy beside a lit stage holding real pieces of the app */
 #trust { padding-top: clamp(32px, 4vw, 60px) }
@@ -246,14 +237,8 @@ body.reel .rise { transition-delay: calc(var(--d, 0) * 90ms) }
 :root[data-theme="dark"] .tile { box-shadow: 0 0 0 1px var(--paper-line) }
   :root[data-theme="dark"] .tile.dark { background: linear-gradient(160deg, #1A3134, #0B1719); box-shadow: 0 0 0 1px rgba(232, 179, 106, .16) }
 
-/* ---------- 07 Download (ink): the coil, seen from above, slowly turning */
+/* ---------- 07 Download (ink) */
 #download { text-align: center; overflow: clip; padding-top: clamp(32px, 5vw, 80px) }
-.coil { position: relative; width: min(760px, 108vw); aspect-ratio: 1; margin: 0 auto calc(-1 * min(150px, 20vw)); z-index: -1;
-  -webkit-mask-image: radial-gradient(closest-side, #000 62%, transparent 100%); mask-image: radial-gradient(closest-side, #000 62%, transparent 100%) }
-.coil img { width: 100%; height: 100%; object-fit: cover }
-.coil::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 52%, rgba(5, 12, 14, .7) 76%, var(--ink) 92%) }
-@media (prefers-reduced-motion: no-preference) { .coil img { animation: platter 240s linear infinite } }
-@keyframes platter { to { transform: rotate(-360deg) } }
 #download h2 { margin-inline: auto; font-weight: 200; font-size: clamp(44px, 7vw, 104px); line-height: .96; letter-spacing: -.036em; max-width: 10em }
 #download .lead { margin: 24px auto 0; color: var(--on-ink-2) }
 #download .ctas { justify-content: center; margin-top: 38px }

@@ -34,7 +34,7 @@ nav .brand.digby-lockup { display: inline-flex; align-items: baseline; flex: non
    The panel is positioned against the fixed nav, so it sits at the page edge on every width. */
 nav .brandset { display: flex; align-items: center; gap: 6px; min-width: 0 }
 nav details.sw { position: static; border: 0; flex: none }
-nav details.sw > summary.sw-b { list-style: none; display: grid; place-items: center; width: 28px; height: 28px; padding: 0; margin: 0; border-radius: 8px; cursor: pointer;
+nav details.sw > summary.sw-b { list-style: none; display: grid; place-items: center; justify-content: center; align-content: center; gap: 0; letter-spacing: normal; width: 28px; height: 28px; padding: 0; margin: 0; border-radius: 8px; cursor: pointer;
   font: inherit; color: rgba(255, 255, 255, .72); transform: translateY(1px); transition: background .2s, color .2s }
 nav details.sw > summary.sw-b::-webkit-details-marker { display: none }
 nav details.sw > summary.sw-b::after { content: none; display: none }
@@ -79,7 +79,6 @@ footer .theme:focus-visible { outline: 2px solid #F2C2A0; outline-offset: 2px }
 :root[data-theme="dark"] .theme .moon { display: none }
 </style>
 <script>try { const t = localStorage.getItem("digby-theme"); if (t) document.documentElement.dataset.theme = t } catch (e) {}</script>
-<link rel="preload" as="image" imagesrcset="assets/reel/reel-1600.jpg 1600w, assets/reel/reel-2560.jpg 2560w" imagesizes="100vw" media="(min-width: 761px) and (min-aspect-ratio: 1/1)">
 </head>
 <body class="reel">
 <nav class="top" aria-label="Main">
@@ -104,12 +103,7 @@ footer .theme:focus-visible { outline: 2px solid #F2C2A0; outline-offset: 2px }
 </nav>
 
 <header class="hero reel-hero" id="top">
-  <div class="art" aria-hidden="true">
-    <picture>
-      <source media="(max-width: 760px), (max-aspect-ratio: 1/1)" srcset="assets/reel/reel-portrait.jpg">
-      <img src="assets/reel/reel-1600.jpg" srcset="assets/reel/reel-1600.jpg 1600w, assets/reel/reel-2560.jpg 2560w" sizes="100vw" alt="" fetchpriority="high" decoding="async">
-    </picture>
-  </div>
+  <div class="art" aria-hidden="true"></div>
   <div class="wrap hero-inner">
     <p class="eyebrow reveal d1">Video downloader for macOS · Free</p>
     <h1><span class="reveal d2">Anything you find.</span><span class="second reveal d3">Yours to keep.</span></h1>
@@ -124,23 +118,6 @@ footer .theme:focus-visible { outline: 2px solid #F2C2A0; outline-offset: 2px }
     <p class="meta reveal d5">Free · macOS 14 Sonoma or later · Apple Silicon · 3 MB download</p>
   </div>
 </header>
-<script>
-// The Reel, in motion: a slow 8-second loop on landscape screens only, never with Reduce Motion or Save-Data, paused off-screen.
-(function () {
-  const art = document.querySelector(".reel-hero .art");
-  if (!art || !matchMedia("(min-width: 761px) and (min-aspect-ratio: 1/1) and (prefers-reduced-motion: no-preference)").matches) return;
-  if (navigator.connection && navigator.connection.saveData) return;
-  const v = document.createElement("video");
-  v.muted = true; v.loop = true; v.playsInline = true; v.preload = "auto";
-  v.setAttribute("muted", ""); v.setAttribute("playsinline", ""); v.setAttribute("aria-hidden", "true");
-  v.src = "assets/reel/reel-loop.mp4";
-  v.addEventListener("playing", () => v.classList.add("on"), { once: true });
-  art.appendChild(v);
-  if ("IntersectionObserver" in window) {
-    new IntersectionObserver(([e]) => { e.isIntersecting ? v.play().catch(() => {}) : v.pause() }).observe(art);
-  } else v.play().catch(() => {});
-})();
-</script>
 
 <main>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -221,7 +198,6 @@ footer .theme:focus-visible { outline: 2px solid #F2C2A0; outline-offset: 2px }
   </div>
 </section>
 
-<div class="rings" aria-hidden="true"><img src="assets/dl/coil-rings.jpg" alt="" width="2560" height="1200" loading="lazy" decoding="async"></div>
 
 <section class="ch ch-ink" id="trust">
   <div class="wrap">
@@ -295,7 +271,6 @@ footer .theme:focus-visible { outline: 2px solid #F2C2A0; outline-offset: 2px }
 </section>
 
 <section class="ch ch-ink" id="download">
-  <div class="coil" aria-hidden="true"><img src="assets/dl/coil-top.jpg" alt="" width="1800" height="1800" loading="lazy" decoding="async"></div>
   <div class="wrap">
     <h2 class="rise">Anything you find.<br>Yours to keep.</h2>
     <p class="lead rise" style="--d:1">Free for macOS 14 Sonoma or later, on Apple Silicon.</p>
@@ -461,68 +436,24 @@ footer .theme:focus-visible { outline: 2px solid #F2C2A0; outline-offset: 2px }
 })();
 </script>
 <script src="assets/site.js"></script>
-<style>/* background-variant mockup layer: only backgrounds of the target panels change */
-body:not(.bgv-0) .bgt > img, body:not(.bgv-0) .bgt > picture, body:not(.bgv-0) .bgt > video { opacity: 0 !important }
-body:not(.bgv-0) .bgt { background: linear-gradient(180deg, var(--g1) 0%, var(--g2) 22%, var(--g3) 48%, var(--g4) 70%, var(--g5) 86%, var(--w1) 96%, var(--w1) 100%);
-  background-size: 100% 170%; background-position: 0 0 }
-.bgt > i.bgv-l { position: absolute; pointer-events: none; display: none; z-index: 0; border-radius: 50% }
-.bgt > i.glow { width: 90%; height: 70%; left: 35%; bottom: -35%; background: radial-gradient(closest-side, var(--w1), transparent); opacity: .45 }
-.bgt > i.light { width: 40%; height: 160%; top: -30%; left: -50%; background: radial-gradient(closest-side, rgba(255,255,255,.22), transparent) }
-body:not(.bgv-0):not(.bgv-1):not(.bgv-2) .bgt > i.bgv-l { display: block }
-.bgv-2 .bgt { animation: bgv-rise 16s ease-in-out infinite alternate }
-@keyframes bgv-rise { from { background-position: 0 0 } to { background-position: 0 70% } }
-.bgv-3 .bgt > i.glow { opacity: .7; animation: bgv-drift 14s ease-in-out infinite alternate } .bgv-3 .bgt > i.light { display: none !important }
-@keyframes bgv-drift { from { transform: translateX(15%) } to { transform: translateX(-90%) } }
-.bgv-4 .bgt > i.light { animation: bgv-pass 12s linear infinite } .bgv-4 .bgt > i.glow { opacity: .3 }
-@keyframes bgv-pass { from { transform: translateX(0) } to { transform: translateX(400%) } }
-.bgv-5 .bgt > i.glow { animation: bgv-pulse 7s ease-in-out infinite alternate } .bgv-5 .bgt > i.light { display: none !important }
-@keyframes bgv-pulse { from { opacity: 0; transform: scale(.8) } to { opacity: .95; transform: scale(1.1) } }
-.bgv-6 .bgt { animation: bgv-rise 22s ease-in-out infinite alternate }
-.bgv-6 .bgt > i.glow { animation: bgv-drift 17s ease-in-out infinite alternate, bgv-pulse 9s ease-in-out infinite alternate } .bgv-6 .bgt > i.light { animation: bgv-pass 20s linear infinite }
-@media (prefers-reduced-motion: reduce) { .bgt, .bgt > i { animation: none !important } }
-/* Downloader without the reel image: hero laid out like the Compressor's at every width */
-body:not(.bgv-0) .reel-hero .art { inset: 0; width: 100%; height: auto; -webkit-mask-image: none; mask-image: none }
-body:not(.bgv-0) .reel-hero::after { display: none }
-#download.bgt > :not(i) { position: relative; z-index: 1 }
+<style>/* hero: the family hero's diagonal pan (115deg, ten stops, 300%, 30s), drifting only a fifth of the way so it stays on its opening colours, in the screening room's ink, projector teal
+   and tungsten, ending on a clean edge against the ink chapter below */
+.reel-hero .art { inset: 0; width: 100%; height: auto; -webkit-mask-image: none; mask-image: none;
+  background: radial-gradient(60% 70% at 18% 30%, rgba(255,255,255,.08), transparent 70%),
+    linear-gradient(115deg, #050C0E, #0A181B, #163A3D, #3F7F84, #6FB7BC, #E8B36A, #163A3D, #050C0E, #0A181B, #163A3D);
+  background-size: 100% 100%, 300% 300%; animation: c-pan 30s ease-in-out infinite alternate }
+@keyframes c-pan { from { background-position: 0 0, 0% 0% } to { background-position: 0 0, 22% 22% } }
+.reel-hero::after { display: none }
 @media (max-width: 760px), (max-aspect-ratio: 1/1) {
-  body:not(.bgv-0) .reel-hero { min-height: 0 }
-  body:not(.bgv-0) .reel-hero .hero-inner { min-height: 0; align-content: start; padding-block: clamp(120px, 18svh, 170px) 72px }
+  .reel-hero .art { height: auto; bottom: 0 }
+  .reel-hero .hero-inner { min-height: 0; align-content: start; padding-block: clamp(120px, 18svh, 170px) 72px }
 }
-
-/* renders below the hero */
-body:not(.opt-1) .rings > img, body:not(.opt-1) .coil { display: none }
-body:not(.opt-1) .rings::after { display: none }
-.opt-2 .rings, .opt-2 #download, .opt-4 #download { background: linear-gradient(180deg, var(--g1) 0%, var(--g2) 22%, var(--g3) 48%, var(--g4) 70%, var(--g5) 86%, var(--w1) 96%, var(--w1) 100%);
-  background-size: 100% 170%; animation: bgv-rise 16s ease-in-out infinite alternate }
-.opt-2 .rings { height: clamp(140px, 16vw, 240px) }
-.opt-3 .rings { display: none }
-.opt-3 .rings::before { display: none; content: ""; position: absolute; left: 50%; top: 50%; width: min(560px, 70vw); height: 2px; transform: translateX(-50%); border-radius: 2px;
-  background: linear-gradient(90deg, transparent, #E8B36A, #F4D6A6, #E8B36A, transparent); box-shadow: 0 0 24px 6px rgba(232,179,106,.4) }
-.opt-3 #download { background: radial-gradient(70% 60% at 50% 110%, rgba(232,179,106,.35), transparent 70%), radial-gradient(60% 60% at 50% 0%, rgba(63,127,132,.35), transparent 70%), var(--ink);
-  background-size: 100% 140%; animation: bgv-rise 10s ease-in-out infinite alternate }
-.opt-4 .rings { display: none }
-
-#bgv-bar { display: none !important }
-#bgv-bar { position: fixed; z-index: 9999; left: 50%; bottom: 16px; transform: translateX(-50%); display: flex; flex-wrap: wrap; justify-content: center; gap: 6px;
-  max-width: calc(100% - 32px); padding: 8px; border-radius: 14px; background: rgba(10,14,22,.78); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
-  font: 600 12px/1 -apple-system, sans-serif }
-#bgv-bar button { font: inherit; color: #fff; background: none; border: 1px solid rgba(255,255,255,.2); border-radius: 9px; padding: 8px 10px; cursor: pointer }
-#bgv-bar button.on { background: #fff; color: #111 }
+/* download chapter: tungsten below, teal above */
+#download { background: radial-gradient(70% 60% at 50% 110%, rgba(232,179,106,.35), transparent 70%), radial-gradient(60% 60% at 50% 0%, rgba(63,127,132,.35), transparent 70%), var(--ink);
+  background-size: 100% 140%; animation: dl-rise 10s ease-in-out infinite alternate }
+@keyframes dl-rise { from { background-position: 0 0 } to { background-position: 0 70% } }
+@media (prefers-reduced-motion: reduce) { .reel-hero .art, #download { animation: none } }
 </style>
-<script>window.BGV={label:"Rest of page:",names:["Keep renders","Sky panels","Dawn line + glow","Minimal"],targets:[".reel-hero .art"],vars:{g1:"#050C0E",g2:"#0A181B",g3:"#163A3D",g4:"#3F7F84",g5:"#6FB7BC",w1:"#E8B36A",w2:"#F4D6A6"}};</script>
-<script>(function(){
-  var cfg = window.BGV, names = cfg.names;
-  cfg.targets.forEach(function(s){ document.querySelectorAll(s).forEach(function(e){ e.classList.add("bgt"); if (getComputedStyle(e).position=="static") e.style.position="relative"; e.style.overflow="hidden" }) });
-  Object.keys(cfg.vars).forEach(function(k){ document.documentElement.style.setProperty("--"+k, cfg.vars[k]) });
-  document.body.classList.add("bgv-2");
-  var bar = document.createElement("div"); bar.id = "bgv-bar"; document.body.appendChild(bar);
-  var lab = document.createElement("span"); lab.textContent = cfg.label; lab.style.cssText = "color:#fff;opacity:.6;align-self:center;padding:0 6px"; bar.appendChild(lab);
-  function set(i, jump){ document.body.className = document.body.className.replace(/\bopt-\d\b/g,"").trim() + " opt-" + i;
-    [].forEach.call(bar.querySelectorAll("button"), function(b, j){ b.className = j == i - 1 ? "on" : "" }); history.replaceState(null, "", "#o" + i);
-    if (jump && cfg.jump) { var t = document.querySelector(cfg.jump); t && t.scrollIntoView({block: "center"}) } }
-  names.forEach(function(n, i){ var b = document.createElement("button"); b.textContent = (i + 1) + " · " + n; b.onclick = function(){ set(i + 1, true) }; bar.appendChild(b) });
-  set(+(location.hash.match(/#o(\d)/) || [0,3])[1]);
-})();</script>
 <script>/* app switcher: close on outside click or Escape */
 (function(){var d=document.querySelector("details.sw");if(!d)return;
 document.addEventListener("click",function(e){if(d.open&&!d.contains(e.target))d.open=false});
