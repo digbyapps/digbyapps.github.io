@@ -180,3 +180,24 @@ footer .fine a { text-decoration: underline; text-decoration-color: rgba(222, 23
   .card, .btn, .more .arr, .shot > picture img, .shot .win { transition: none }
   .card:hover, .card:hover .shot > picture img, .card:hover .shot .win { transform: none }
 }
+
+/* ---------- Daylight wash (2026-11): a bright pastel rainbow hero for the family page, dark text on light;
+   each card takes its colours from its app icon (Compressor sage, Downloader dusty blue). */
+.rb-text{background:linear-gradient(90deg,#FF4D5E, #FF8A3D, #FFD23F, #3DDC97, #2EC4F1, #6A6CFF, #B44DFF, #FF4DB8,#FF4D5E);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:rb-slide 14s linear infinite}
+@keyframes rb-slide{from{background-position:0 0}to{background-position:200% 0}}
+@media (prefers-reduced-motion: reduce){.sky::before,.sky::after,.rb-text,.rb-anim{animation:none!important}}
+
+html{background:#FFF6EE} .sky{color:#17122E}
+.sky::before{background:radial-gradient(60% 70% at 18% 30%,rgba(255,255,255,.85),transparent 70%),
+ linear-gradient(115deg,#FFC2C7,#FFD9B0,#FFF0A6,#C6F2D6,#BFE8FF,#D3CCFF,#F6C8F0,#FFC2C7,#FFD9B0,#FFF0A6);
+ background-size:100% 100%,300% 300%;animation:c-pan 30s ease-in-out infinite alternate}
+@keyframes c-pan{from{background-position:0 0,0% 0%}to{background-position:0 0,100% 100%}}
+.wordmark{color:#17122E} .sky .lead{color:rgba(23,18,46,.68)} :focus-visible{outline-color:#6A6CFF}
+footer{border-top:4px solid transparent;border-image:linear-gradient(90deg,#FF4D5E, #FF8A3D, #FFD23F, #3DDC97, #2EC4F1, #6A6CFF, #B44DFF, #FF4DB8) 1}
+
+.card.cp{--accent:#4E7D63;--glow:rgba(143,184,160,.6);--stage:linear-gradient(170deg,#DCEBE2 0%,#EEF4EF 55%,#F6EEDF 100%)}
+.card.dl{--accent:#4A6C9B;--glow:rgba(160,182,214,.6);--stage:linear-gradient(170deg,#DCE5F2 0%,#EEF2F8 55%,#F4ECDF 100%)}
+.pill{--cp:#4E7D63}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .card.cp{--accent:#93C4A8;--stage:linear-gradient(170deg,#15281F 0%,#111B30 60%,#2A2620 100%)} :root:not([data-theme="light"]) .card.dl{--accent:#9DB7DE;--stage:linear-gradient(170deg,#152238 0%,#111B30 60%,#2A2620 100%)} :root:not([data-theme="light"]) .pill{--cp:#93C4A8}} :root[data-theme="dark"] .card.cp{--accent:#93C4A8;--stage:linear-gradient(170deg,#15281F 0%,#111B30 60%,#2A2620 100%)} :root[data-theme="dark"] .card.dl{--accent:#9DB7DE;--stage:linear-gradient(170deg,#152238 0%,#111B30 60%,#2A2620 100%)} :root[data-theme="dark"] .pill{--cp:#93C4A8}
+.icon { margin: 0; width: 56px; height: 56px; border-radius: 22.5%; filter: drop-shadow(0 6px 14px color-mix(in srgb, var(--accent) 28%, transparent)) }
+.flow img { margin: 0; width: 60px; height: 60px; filter: drop-shadow(0 8px 18px rgba(23, 18, 46, .14)) }

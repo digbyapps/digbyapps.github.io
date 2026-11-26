@@ -80,7 +80,6 @@ body.reel .hero .btn-light:hover, body.reel nav.top .btn-light:hover {
   .reel-hero::before { background: linear-gradient(180deg, rgba(5, 12, 14, .55) 0%, rgba(5, 12, 14, 0) 14%) }
   .reel-hero::after { display: none }
   .reel-hero .hero-inner { min-height: 0; align-content: start; padding-block: calc(max(300px, 42svh) - 34px) 56px }
-  body.reel nav.top .btn-small { padding: 9px 14px }
 }
 @media (prefers-reduced-motion: reduce) {
   .reel-hero .reveal, .reel-hero .art img { animation: none; opacity: 1; transform: none }
