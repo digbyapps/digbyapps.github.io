@@ -703,5 +703,67 @@ const DIGBY = { repo: "digbyapps/digby-video-compressor", version: "1.1.0", asse
   }, 2600);
 })();
 </script>
+<style>/* background-variant mockup layer: only backgrounds of the target panels change */
+body:not(.bgv-0) .bgt > img, body:not(.bgv-0) .bgt > picture, body:not(.bgv-0) .bgt > video { opacity: 0 !important }
+body:not(.bgv-0) .bgt { background: linear-gradient(180deg, var(--g1) 0%, var(--g2) 22%, var(--g3) 48%, var(--g4) 70%, var(--g5) 86%, var(--w1) 96%, var(--w1) 100%);
+  background-size: 100% 170%; background-position: 0 0 }
+.bgt > i.bgv-l { position: absolute; pointer-events: none; display: none; z-index: 0; border-radius: 50% }
+.bgt > i.glow { width: 90%; height: 70%; left: 35%; bottom: -35%; background: radial-gradient(closest-side, var(--w1), transparent); opacity: .45 }
+.bgt > i.light { width: 40%; height: 160%; top: -30%; left: -50%; background: radial-gradient(closest-side, rgba(255,255,255,.22), transparent) }
+body:not(.bgv-0):not(.bgv-1):not(.bgv-2) .bgt > i.bgv-l { display: block }
+.bgv-2 .bgt { animation: bgv-rise 16s ease-in-out infinite alternate }
+@keyframes bgv-rise { from { background-position: 0 0 } to { background-position: 0 70% } }
+.bgv-3 .bgt > i.glow { opacity: .7; animation: bgv-drift 14s ease-in-out infinite alternate } .bgv-3 .bgt > i.light { display: none !important }
+@keyframes bgv-drift { from { transform: translateX(15%) } to { transform: translateX(-90%) } }
+.bgv-4 .bgt > i.light { animation: bgv-pass 12s linear infinite } .bgv-4 .bgt > i.glow { opacity: .3 }
+@keyframes bgv-pass { from { transform: translateX(0) } to { transform: translateX(400%) } }
+.bgv-5 .bgt > i.glow { animation: bgv-pulse 7s ease-in-out infinite alternate } .bgv-5 .bgt > i.light { display: none !important }
+@keyframes bgv-pulse { from { opacity: 0; transform: scale(.8) } to { opacity: .95; transform: scale(1.1) } }
+.bgv-6 .bgt { animation: bgv-rise 22s ease-in-out infinite alternate }
+.bgv-6 .bgt > i.glow { animation: bgv-drift 17s ease-in-out infinite alternate, bgv-pulse 9s ease-in-out infinite alternate } .bgv-6 .bgt > i.light { animation: bgv-pass 20s linear infinite }
+@media (prefers-reduced-motion: reduce) { .bgt, .bgt > i { animation: none !important } }
+/* Downloader without the reel image: hero laid out like the Compressor's at every width */
+body:not(.bgv-0) .reel-hero .art { inset: 0; width: 100%; height: auto; -webkit-mask-image: none; mask-image: none }
+body:not(.bgv-0) .reel-hero::after { display: none }
+#download.bgt > :not(i) { position: relative; z-index: 1 }
+@media (max-width: 760px), (max-aspect-ratio: 1/1) {
+  body:not(.bgv-0) .reel-hero { min-height: 0 }
+  body:not(.bgv-0) .reel-hero .hero-inner { min-height: 0; align-content: start; padding-block: clamp(120px, 18svh, 170px) 72px }
+}
+
+/* the gap between 03 Features and 04 Preview Studio */
+.breath > img { display: none }
+.opt-1 .breath { display: none }
+.opt-2 .breath { height: clamp(90px, 10vw, 140px); background: linear-gradient(180deg, var(--haze), var(--alt-0)) }
+.opt-2 .breath::after, .opt-3 .breath::after, .opt-4 .breath::after { display: none }
+.opt-3 .breath { height: clamp(120px, 14vw, 200px); background: linear-gradient(180deg, var(--haze) 0%, #0E1F3D 55%, var(--alt-0) 100%) }
+.opt-3 .breath::before { content: ""; position: absolute; left: 50%; top: 55%; width: min(560px, 70vw); height: 2px; transform: translateX(-50%); border-radius: 2px;
+  background: linear-gradient(90deg, transparent, #F2C2A0, #FFE7D4, #F2C2A0, transparent); box-shadow: 0 0 24px 6px rgba(242,194,160,.45) }
+.opt-4 .breath { height: clamp(140px, 16vw, 240px);
+  background: linear-gradient(180deg, transparent 0%, transparent 60%, var(--alt-0) 100%), linear-gradient(0deg, var(--g1) 0%, var(--g2) 22%, var(--g3) 48%, var(--g4) 70%, var(--g5) 86%, var(--w1) 100%);
+  background-size: 100% 100%, 100% 170%; animation: bgv-rise2 16s ease-in-out infinite alternate }
+@keyframes bgv-rise2 { from { background-position: 0 0, 0 0 } to { background-position: 0 0, 0 100% } }
+
+#bgv-bar { display: none !important }
+#bgv-bar { position: fixed; z-index: 9999; left: 50%; bottom: 16px; transform: translateX(-50%); display: flex; flex-wrap: wrap; justify-content: center; gap: 6px;
+  max-width: calc(100% - 32px); padding: 8px; border-radius: 14px; background: rgba(10,14,22,.78); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  font: 600 12px/1 -apple-system, sans-serif }
+#bgv-bar button { font: inherit; color: #fff; background: none; border: 1px solid rgba(255,255,255,.2); border-radius: 9px; padding: 8px 10px; cursor: pointer }
+#bgv-bar button.on { background: #fff; color: #111 }
+</style>
+<script>window.BGV={label:"Gap above 04:",jump:".breath",names:["No band","Soft fade","Dawn line","Sky strip"],targets:[".hero .art","#download .art"],vars:{g1:"#081430",g2:"#14294D",g3:"#2E5590",g4:"#6F98C8",g5:"#C9D9EC",w1:"#F2C2A0",w2:"#E7B898"}};</script>
+<script>(function(){
+  var cfg = window.BGV, names = cfg.names;
+  cfg.targets.forEach(function(s){ document.querySelectorAll(s).forEach(function(e){ e.classList.add("bgt"); if (getComputedStyle(e).position=="static") e.style.position="relative"; e.style.overflow="hidden" }) });
+  Object.keys(cfg.vars).forEach(function(k){ document.documentElement.style.setProperty("--"+k, cfg.vars[k]) });
+  document.body.classList.add("bgv-2");
+  var bar = document.createElement("div"); bar.id = "bgv-bar"; document.body.appendChild(bar);
+  var lab = document.createElement("span"); lab.textContent = cfg.label; lab.style.cssText = "color:#fff;opacity:.6;align-self:center;padding:0 6px"; bar.appendChild(lab);
+  function set(i, jump){ document.body.className = document.body.className.replace(/\bopt-\d\b/g,"").trim() + " opt-" + i;
+    [].forEach.call(bar.querySelectorAll("button"), function(b, j){ b.className = j == i - 1 ? "on" : "" }); history.replaceState(null, "", "#o" + i);
+    if (jump && cfg.jump) { var t = document.querySelector(cfg.jump); t && t.scrollIntoView({block: "center"}) } }
+  names.forEach(function(n, i){ var b = document.createElement("button"); b.textContent = (i + 1) + " · " + n; b.onclick = function(){ set(i + 1, true) }; bar.appendChild(b) });
+  set(+(location.hash.match(/#o(\d)/) || [0,1])[1]);
+})();</script>
 </body>
 </html>

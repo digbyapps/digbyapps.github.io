@@ -89,7 +89,8 @@
   // nav turns solid once the hero is mostly scrolled past
   const nav = document.querySelector("nav.top"), hero = document.querySelector(".hero");
   if (nav && hero) {
-    const update = () => nav.classList.toggle("solid", hero.getBoundingClientRect().bottom < 90);
+    const mark = hero.querySelector(".eyebrow") || hero;
+    const update = () => nav.classList.toggle("solid", mark.getBoundingClientRect().top < nav.offsetHeight + 28 || hero.getBoundingClientRect().bottom < 90);
     addEventListener("scroll", update, { passive: true }); update();
   }
 
