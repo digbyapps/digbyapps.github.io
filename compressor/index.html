@@ -80,6 +80,40 @@ nav .brand.digby-lockup { display: inline-flex; align-items: baseline; flex: non
 @media (max-width: 760px) { .digby-lockup .dg-rule { margin: 0 .4em 0 .44em } .digby-lockup .dg-product { font-size: .6em; letter-spacing: .01em } }
 /* small phones: the whole lockup shrinks with the viewport (full size down to ~360px), never drops the product name */
 @media (max-width: 430px) { nav .brand.digby-lockup { font-size: clamp(16px, calc((100vw - 140px) / 8.6), 25px) } }
+/* Digby app switcher: a small chevron after the lockup opens the family list (works without JS; JS only adds close-on-outside/Escape).
+   The panel is positioned against the fixed nav, so it sits at the page edge on every width. */
+nav .brandset { display: flex; align-items: center; gap: 6px; min-width: 0 }
+nav details.sw { position: static; border: 0; flex: none }
+nav details.sw > summary.sw-b { list-style: none; display: grid; place-items: center; width: 28px; height: 28px; padding: 0; margin: 0; border-radius: 8px; cursor: pointer;
+  font: inherit; color: rgba(255, 255, 255, .72); transform: translateY(1px); transition: background .2s, color .2s }
+nav details.sw > summary.sw-b::-webkit-details-marker { display: none }
+nav details.sw > summary.sw-b::after { content: none; display: none }
+nav details.sw > summary.sw-b svg { width: 12px; height: 12px; transition: transform .25s }
+nav details.sw > summary.sw-b:hover, nav details.sw[open] > summary.sw-b { background: rgba(255, 255, 255, .12); color: #fff }
+nav details.sw[open] > summary.sw-b svg { transform: rotate(180deg) }
+nav details.sw > summary.sw-b:focus-visible { outline: 2px solid rgba(255, 255, 255, .8); outline-offset: 2px }
+.sw-p { position: absolute; z-index: 20; top: calc(100% - 4px); left: max(16px, env(safe-area-inset-left, 0px)); width: min(340px, calc(100vw - 32px));
+  display: grid; gap: 2px; padding: 8px; border-radius: 18px; background: #fff; color: #0E1726; font: 400 14px/1.35 var(--body, -apple-system, sans-serif);
+  box-shadow: 0 24px 60px rgba(4, 10, 25, .35), 0 0 0 1px rgba(14, 31, 61, .06); animation: sw-in .2s ease-out }
+@keyframes sw-in { from { opacity: 0; transform: translateY(-6px) } }
+.sw-p .sw-k { margin: 0; font-family: inherit; font-weight: 600; font-size: 10.5px; line-height: 1; letter-spacing: .14em; text-transform: uppercase; color: #5A6A80; padding: 10px 10px 8px }
+.sw-p a { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 12px; text-decoration: none; color: inherit }
+.sw-p a:hover, .sw-p a:focus-visible { background: #F1F4F9; outline: none }
+.sw-p img { width: 40px; height: 40px; flex: none }
+.sw-p .sw-t { display: grid; gap: 2px; flex: 1; min-width: 0 }
+.sw-p b { font-weight: 600 } .sw-p i { font-style: normal; color: #5A6A80; font-size: 13px }
+.sw-p em { font-style: normal; font-size: 11.5px; white-space: nowrap; padding: 4px 8px; border-radius: 99px; color: #4E7D63; background: color-mix(in srgb, #4E7D63 12%, #fff) }
+.sw-p a.sw-all { color: #5A6A80; border-top: 1px solid #E6EAF0; border-radius: 0 0 12px 12px; margin-top: 4px; padding-block: 12px 10px }
+@media (min-width: 761px) { .sw-p { left: max(28px, env(safe-area-inset-left, 0px)) } }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .sw-p { background: #131B2A; color: #E6ECF5; box-shadow: 0 24px 60px rgba(0, 0, 0, .55), 0 0 0 1px rgba(255, 255, 255, .08) }
+  :root:not([data-theme="light"]) .sw-p a:hover { background: #1C2638 } :root:not([data-theme="light"]) .sw-k, :root:not([data-theme="light"]) .sw-p i, :root:not([data-theme="light"]) .sw-p a.sw-all { color: #95A3B8 }
+  :root:not([data-theme="light"]) .sw-p a.sw-all { border-color: rgba(255, 255, 255, .08) } :root:not([data-theme="light"]) .sw-p em { background: color-mix(in srgb, #4E7D63 22%, #131B2A); color: #93C4A8 } }
+:root[data-theme="dark"] .sw-p { background: #131B2A; color: #E6ECF5; box-shadow: 0 24px 60px rgba(0, 0, 0, .55), 0 0 0 1px rgba(255, 255, 255, .08) }
+:root[data-theme="dark"] .sw-p a:hover { background: #1C2638 } :root[data-theme="dark"] .sw-k, :root[data-theme="dark"] .sw-p i, :root[data-theme="dark"] .sw-p a.sw-all { color: #95A3B8 }
+:root[data-theme="dark"] .sw-p a.sw-all { border-color: rgba(255, 255, 255, .08) } :root[data-theme="dark"] .sw-p em { background: color-mix(in srgb, #4E7D63 22%, #131B2A); color: #93C4A8 }
+@media (prefers-reduced-motion: reduce) { .sw-p { animation: none } }
+/* small phones: the lockup shrinks with the viewport, leaving room for the chevron and Download */
+@media (max-width: 430px) { nav .brand.digby-lockup { font-size: clamp(15px, calc((100vw - 176px) / 8.6), 25px) } nav details.sw > summary.sw-b { width: 26px; height: 26px } }
 /* nav layout: Download always on the right; never wraps */
 @media (max-width: 900px) { nav .links .nav-opt { display: none } }
 @media (max-width: 760px) { nav { gap: 16px } nav > .btn-small { margin-left: auto } }
@@ -317,9 +351,20 @@ footer .theme:focus-visible { outline: 2px solid #F2C2A0; outline-offset: 2px }
 <script>document.documentElement.classList.add('js')</script>
 
 <nav id="nav">
+  <div class="brandset">
   <a class="brand digby-lockup" href="../digby/" aria-label="Digby home">
     <span class="dg-mark">Digby</span><span class="dg-rule" aria-hidden="true"></span><span class="dg-product">Video Compressor</span>
   </a>
+  <details class="sw">
+    <summary class="sw-b" aria-label="Digby apps" title="Digby apps"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5"/></svg></summary>
+    <div class="sw-p" role="group" aria-label="Digby apps">
+      <p class="sw-k">Digby apps</p>
+      <a href="#top" aria-current="page"><img src="../digby/assets/compressor-icon.png" alt="" width="40" height="40"><span class="sw-t"><b>Video Compressor</b><i>Make any video far smaller</i></span><em>You’re here</em></a>
+      <a href="../downloader/"><img src="../digby/assets/downloader-icon.png" alt="" width="40" height="40"><span class="sw-t"><b>Video Downloader</b><i>Keep videos at the quality you choose</i></span></a>
+      <a class="sw-all" href="../digby/">All Digby apps <span aria-hidden="true">→</span></a>
+    </div>
+  </details>
+</div>
   <div class="links"><a href="#results">Results</a><a class="nav-opt" href="#how">How it works</a><a href="#features">Features</a><a href="#formats">Formats</a><a href="#faq">FAQ</a></div>
   <a class="btn btn-light btn-small" href="#download" data-pull>Download</a>
 </nav>
@@ -765,5 +810,9 @@ body:not(.bgv-0) .reel-hero::after { display: none }
   names.forEach(function(n, i){ var b = document.createElement("button"); b.textContent = (i + 1) + " · " + n; b.onclick = function(){ set(i + 1, true) }; bar.appendChild(b) });
   set(+(location.hash.match(/#o(\d)/) || [0,1])[1]);
 })();</script>
+<script>/* app switcher: close on outside click or Escape */
+(function(){var d=document.querySelector("details.sw");if(!d)return;
+document.addEventListener("click",function(e){if(d.open&&!d.contains(e.target))d.open=false});
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&d.open){d.open=false;d.querySelector("summary").focus()}})})();</script>
 </body>
 </html>
