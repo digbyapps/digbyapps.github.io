@@ -3,13 +3,13 @@
    its own product's accent. Light and dark follow the system unless data-theme is set (footer switch, theme.js). */
 :root {
   --alt-0: #040A17; --alt-1: #07112A; --alt-2: #0E1F3D; --sky-end: var(--alt-2);
-  --on-alt: #EEF2F8; --on-alt-2: rgba(222, 232, 246, .7); --alt-line: rgba(191, 211, 234, .1);
+  --on-alt: #EEF4EF; --on-alt-2: rgba(222, 232, 246, .7); --alt-line: rgba(191, 211, 234, .1);
   --dawn: #F2C2A0;
   --bg: #F4F6FA; --bg-2: #EBEFF6; --card: #FFFFFF; --fg: #0B1526; --muted: #4F5D73; --line: rgba(14, 31, 61, .09);
   --shadow: 0 1px 2px rgba(14, 31, 61, .05), 0 18px 50px rgba(14, 31, 61, .08);
   --shadow-hover: 0 1px 2px rgba(14, 31, 61, .06), 0 28px 70px rgba(14, 31, 61, .14);
   --win-shadow: 0 0 0 1px rgba(14, 31, 61, .08), 0 18px 40px rgba(14, 31, 61, .16);
-  --cp: #2F5E9E; --cp-glow: rgba(242, 194, 160, .55); --cp-stage: linear-gradient(170deg, #DCE7F5 0%, #EEF2F8 55%, #F8E3D3 100%);
+  --cp: #2F5E9E; --cp-glow: rgba(242, 194, 160, .55); --cp-stage: linear-gradient(170deg, #DCE7F5 0%, #EEF4EF 55%, #F8E3D3 100%);
   --dl: #1C666C; --dl-glow: rgba(232, 179, 106, .5); --dl-stage: linear-gradient(170deg, #DCEBEA 0%, #F2EFE8 60%, #F4E2C6 100%);
   --win: #FFFFFF; --win-bar: #ECECEC; --win-side: #F2F2F4;
   --display: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
@@ -182,7 +182,7 @@ footer .fine a { text-decoration: underline; text-decoration-color: rgba(222, 23
 }
 
 /* ---------- Daylight wash (2026-11): a bright pastel rainbow hero for the family page, dark text on light;
-   each card takes its colours from its app icon (Compressor sage, Downloader dusty blue). */
+   each card takes its colours from its app icon (Compressor dusty blue, Downloader sage). */
 .rb-text{background:linear-gradient(90deg,#FF4D5E, #FF8A3D, #FFD23F, #3DDC97, #2EC4F1, #6A6CFF, #B44DFF, #FF4DB8,#FF4D5E);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:rb-slide 14s linear infinite}
 @keyframes rb-slide{from{background-position:0 0}to{background-position:200% 0}}
 @media (prefers-reduced-motion: reduce){.sky::before,.sky::after,.rb-text,.rb-anim{animation:none!important}}
@@ -195,9 +195,9 @@ html{background:#FFF6EE} .sky{color:#17122E}
 .wordmark{color:#17122E} .sky .lead{color:rgba(23,18,46,.68)} :focus-visible{outline-color:#6A6CFF}
 footer{border-top:4px solid transparent;border-image:linear-gradient(90deg,#FF4D5E, #FF8A3D, #FFD23F, #3DDC97, #2EC4F1, #6A6CFF, #B44DFF, #FF4DB8) 1}
 
-.card.cp{--accent:#4E7D63;--glow:rgba(143,184,160,.6);--stage:linear-gradient(170deg,#DCEBE2 0%,#EEF4EF 55%,#F6EEDF 100%)}
-.card.dl{--accent:#4A6C9B;--glow:rgba(160,182,214,.6);--stage:linear-gradient(170deg,#DCE5F2 0%,#EEF2F8 55%,#F4ECDF 100%)}
-.pill{--cp:#4E7D63}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .card.cp{--accent:#93C4A8;--stage:linear-gradient(170deg,#15281F 0%,#111B30 60%,#2A2620 100%)} :root:not([data-theme="light"]) .card.dl{--accent:#9DB7DE;--stage:linear-gradient(170deg,#152238 0%,#111B30 60%,#2A2620 100%)} :root:not([data-theme="light"]) .pill{--cp:#93C4A8}} :root[data-theme="dark"] .card.cp{--accent:#93C4A8;--stage:linear-gradient(170deg,#15281F 0%,#111B30 60%,#2A2620 100%)} :root[data-theme="dark"] .card.dl{--accent:#9DB7DE;--stage:linear-gradient(170deg,#152238 0%,#111B30 60%,#2A2620 100%)} :root[data-theme="dark"] .pill{--cp:#93C4A8}
+.card.cp{--accent:#4A6C9B;--glow:rgba(160,182,214,.6);--stage:linear-gradient(170deg,#DCE5F2 0%,#EEF2F8 55%,#F4ECDF 100%)}
+.card.dl{--accent:#4E7D63;--glow:rgba(143,184,160,.6);--stage:linear-gradient(170deg,#DCEBE2 0%,#EEF4EF 55%,#F6EEDF 100%)}
+.pill{--cp:#4A6C9B}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .card.cp{--accent:#9DB7DE;--stage:linear-gradient(170deg,#152238 0%,#111B30 60%,#2A2620 100%)} :root:not([data-theme="light"]) .card.dl{--accent:#93C4A8;--stage:linear-gradient(170deg,#15281F 0%,#111B30 60%,#2A2620 100%)} :root:not([data-theme="light"]) .pill{--cp:#9DB7DE}} :root[data-theme="dark"] .card.cp{--accent:#9DB7DE;--stage:linear-gradient(170deg,#152238 0%,#111B30 60%,#2A2620 100%)} :root[data-theme="dark"] .card.dl{--accent:#93C4A8;--stage:linear-gradient(170deg,#15281F 0%,#111B30 60%,#2A2620 100%)} :root[data-theme="dark"] .pill{--cp:#9DB7DE}
 .icon { margin: 0; width: 56px; height: 56px; border-radius: 22.5%; filter: drop-shadow(0 6px 14px color-mix(in srgb, var(--accent) 28%, transparent)) }
 .flow img { margin: 0; width: 60px; height: 60px; filter: drop-shadow(0 8px 18px rgba(23, 18, 46, .14)) }
